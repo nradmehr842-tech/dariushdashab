@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: hokm-online-dariush
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: ADMIN_PIN
+        sync: false
+      - key: ADMIN_SECRET
+        generateValue: true
