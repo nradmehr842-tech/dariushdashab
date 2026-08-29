@@ -17,8 +17,8 @@
     --text-ink:#fffaf0; --text-ink-dim:#ead8b8; --text-cream:#2a0b07;
     --line:rgba(240,198,110,.34);
     --shadow:0 18px 44px rgba(18,2,1,.54);
-    --game-label-size:clamp(21px,2.9vw,27px);
-    --game-number-size:clamp(34px,4.3vw,43px);
+    --game-label-size:clamp(18px,2.5vw,23px);
+    --game-number-size:var(--game-label-size);
     --game-label-color:#f2c56c;
   }
   *{ box-sizing:border-box; }
@@ -407,8 +407,8 @@
     border:1px solid rgba(235,185,91,.48); box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 6px 18px rgba(0,0,0,.32);
     backdrop-filter:blur(14px) saturate(1.25); -webkit-backdrop-filter:blur(14px) saturate(1.25);
   }
-  .hud-team .hud-name{ max-width:calc(100% - 34px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--game-label-color); font-size:var(--game-label-size); font-weight:900; text-shadow:0 2px 3px rgba(0,0,0,.8); }
-  .hud-team .hud-score{ min-width:1em; color:var(--game-label-color); font-family:Arial,sans-serif; font-size:var(--game-number-size); line-height:1; font-weight:950; text-align:center; text-shadow:0 2px 2px #160b07; }
+  .hud-team .hud-name{ max-width:calc(100% - 29px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--game-label-color); font-size:var(--game-label-size); line-height:1.3; font-weight:900; text-shadow:0 2px 3px rgba(0,0,0,.8); }
+  .hud-team .hud-score{ min-width:1em; color:var(--game-label-color); font-family:Arial,sans-serif; font-size:var(--game-number-size); line-height:1.3; font-weight:950; text-align:center; text-shadow:0 2px 2px #160b07; }
   .trump-emblem{ position:absolute; top:calc(100% + 7px); left:50%; translate:-50% 0; color:#e6b653; font-size:clamp(42px,6.5vw,62px); line-height:1; pointer-events:none; perspective:220px; }
   .trump-emblem svg{ display:block; transform-origin:50% 50%; transform-style:preserve-3d; animation:trumpSpin 3.6s linear infinite; filter:drop-shadow(0 1px 0 #fff0b8) drop-shadow(0 3px 0 #7d4718) drop-shadow(0 6px 6px rgba(0,0,0,.62)); }
   @keyframes trumpSpin{
@@ -483,7 +483,7 @@
     body.table-mode .score-chip{ padding:5px 6px; }
     body.table-mode .score-chip .score-name{ max-width:74%; font-size:9px; }
     body.table-mode .topbar{ width:100vw; padding:0 5px; }
-    .hud-team{ width:clamp(136px,38vw,190px); min-height:44px; gap:5px; padding:5px 7px; border-radius:12px; }
+    .hud-team{ width:43.5vw; min-height:40px; gap:5px; padding:4px 7px; border-radius:12px; overflow:visible; }
     .hud-team .hud-name{ font-size:var(--game-label-size); }
     .hud-team .hud-score{ font-size:var(--game-number-size); }
     .trump-emblem{ top:calc(100% + 5px); font-size:44px; }
@@ -493,7 +493,8 @@
     .bot-list{ grid-template-columns:1fr; }
     .seat-grid{ grid-template-columns:1fr; }
     .player-hand-overlay{ left:1%; right:1%; bottom:max(.8%,env(safe-area-inset-bottom)); }
-    .player-hand-overlay .card{ width:clamp(48px,14vw,66px); margin-left:clamp(-31px,-6.6vw,-21px); font-size:14px; }
+    .player-hand-overlay .table-hand{ padding:0; }
+    .player-hand-overlay .card{ width:clamp(42px,13.2vw,70px); margin-left:-6.9vw; font-size:13px; }
     .trump-picker .card{ width:clamp(58px,15.5vw,70px); height:auto; aspect-ratio:.714; font-size:15px; }
   }
   @media (orientation:portrait) and (min-width:600px){
@@ -559,6 +560,13 @@ function displayName(seat){
 }
 var TEAM_NAMES = { get: function(i){ return displayName(i===0?0:1) + ' \u0648 ' + displayName(i===0?2:3); } };
 var IDENTITY_ORDER = [1,2,3,0]; // amir, saeed, milad, dariush (order requested)
+
+// Rotate the visual table for each device: the person using this browser is
+// always seated at the bottom, while the shared game seat numbers stay intact.
+function seatPosition(seat){
+  var viewer = Number.isInteger(myIdentity) ? myIdentity : 0;
+  return POS_ORDER[(seat-viewer+4)%4];
+}
 
 function suitInfo(k){ for(var i=0;i<SUITS.length;i++) if(SUITS[i].key===k) return SUITS[i]; return null; }
 // Standard-looking vector suit pips (font-independent, so they render crisp/bold on every device
@@ -1408,10 +1416,10 @@ function seatMapHtml(opts){
   var animateCollection = collecting && (state.trickSeq||0)>lastAnimatedTrickSeq;
   var cutSeq = state.cutEffect && state.cutEffect.seq ? state.cutEffect.seq : 0;
   var animateCut = !!(state.cutEffect && state.cutEffect.at && Date.now()-state.cutEffect.at<1800 && cutSeq>lastAnimatedCutSeq);
-  var collectTargetPos = collecting ? POS_ORDER[state.lastTrickWinnerSeat] : null;
+  var collectTargetPos = collecting ? seatPosition(state.lastTrickWinnerSeat) : null;
   var html = '<div class="table-wrap"><div class="table-board"><div class="table-surface"></div>'+(state.phase==='matchEnd'?'<div class="victory-glow"></div>':'');
   for(var i=0;i<4;i++){
-    var pos = POS_ORDER[i];
+    var pos = seatPosition(i);
     var active = (opts.activeSeat===i);
     var isHakem = (state.hakemIndex===i);
     var scoreHit = animateCollection && state.lastTrickWinnerSeat===i;
@@ -1424,17 +1432,17 @@ function seatMapHtml(opts){
     '</div>';
   }
   if(animateCut){
-    var cutPos = POS_ORDER[state.cutEffect.seat];
+    var cutPos = seatPosition(state.cutEffect.seat);
     html += '<div class="cut-effect pos-'+cutPos+'" aria-hidden="true"><span class="cut-spark"></span><span class="cut-spark second"></span><span class="cut-symbol">'+suitIcon(state.trump)+'</span></div>';
   }
   if(animateLatest){
-    var lastPlayedPos = POS_ORDER[opts.trick[opts.trick.length-1].playerIndex];
+    var lastPlayedPos = seatPosition(opts.trick[opts.trick.length-1].playerIndex);
     html += '<div class="play-gesture pos-'+lastPlayedPos+'" aria-hidden="true"></div>';
   }
   if(opts.trick){
     for(var t=0;t<opts.trick.length;t++){
       var entry = opts.trick[t];
-      var pos2 = POS_ORDER[entry.playerIndex];
+      var pos2 = seatPosition(entry.playerIndex);
       var vector = collecting ? collectVector(pos2, collectTargetPos) : null;
       var slotStyle = 'animation-delay:'+(t*.045)+'s';
       if(vector){
