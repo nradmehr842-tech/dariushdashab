@@ -96,11 +96,16 @@ function gameMutationNeedsAdmin(oldValue, newValue) {
     return true;
   }
   if (!oldState) return false;
+  const automaticNextHand = oldState.phase === "matchEnd"
+    && nextState.phase === "dealing"
+    && oldState.matchResult
+    && Array.isArray(nextState.hands)
+    && nextState.hands.length === 4;
   if (!sameArray(oldState.botSeats, nextState.botSeats)) return true;
   const oldNextHakem = Number.isInteger(oldState.nextHakemIndex) ? oldState.nextHakemIndex : null;
   const nextHakem = Number.isInteger(nextState.nextHakemIndex) ? nextState.nextHakemIndex : null;
-  if (oldNextHakem !== nextHakem) return true;
-  if (Boolean(oldState.nextHakemConfirmedAtMatchEnd) !== Boolean(nextState.nextHakemConfirmedAtMatchEnd)) return true;
+  if (oldNextHakem !== nextHakem && !automaticNextHand) return true;
+  if (Boolean(oldState.nextHakemConfirmedAtMatchEnd) !== Boolean(nextState.nextHakemConfirmedAtMatchEnd) && !automaticNextHand) return true;
   if (oldState.phase === "lobby" && nextState.phase !== "lobby") return true;
   if (oldState.phase !== "lobby" && nextState.phase === "lobby") return true;
   if (!sameArray(oldState.league, nextState.league)) {
