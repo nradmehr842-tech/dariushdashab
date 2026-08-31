@@ -188,6 +188,44 @@
   .hakem-crown.pos-left{ left:4.6%; top:50%; transform:translate(-50%,-50%) rotate(90deg); }
   .hakem-crown.pos-right{ right:4.6%; top:50%; transform:translate(50%,-50%) rotate(-90deg); }
   @keyframes crownFloat{ 50%{ filter:drop-shadow(0 5px 4px #321200) drop-shadow(0 0 15px rgba(255,208,93,1)); } }
+  .crown-flight{
+    position:absolute; z-index:28; width:clamp(42px,8vw,72px); height:auto; color:#ffd36d; pointer-events:none;
+    translate:-50% -50%; filter:drop-shadow(0 3px 2px #321200) drop-shadow(0 0 14px rgba(255,206,86,.95));
+    animation-duration:2.65s; animation-timing-function:cubic-bezier(.22,.68,.2,1); animation-fill-mode:both;
+  }
+  .crown-flight svg{ display:block; animation:crownSpin .42s linear infinite; }
+  .crown-flight::before{
+    content:""; position:absolute; inset:-30%; border-radius:50%; border:2px solid rgba(255,221,129,.75);
+    box-shadow:0 0 13px #ffd574,inset 0 0 12px rgba(255,215,112,.55); animation:crownPulse .58s ease-in-out infinite alternate;
+  }
+  .crown-flight.pos-bottom{ animation-name:crownBottomToRight; }
+  .crown-flight.pos-right{ animation-name:crownRightToTop; }
+  .crown-flight.pos-top{ animation-name:crownTopToLeft; }
+  .crown-flight.pos-left{ animation-name:crownLeftToBottom; }
+  .seat.crown-arriving .table-crown{ animation:crownArrive .68s cubic-bezier(.18,.88,.22,1.35) both; animation-delay:var(--crown-arrive-delay,2.25s); }
+  @keyframes crownSpin{ to{ transform:rotateY(360deg) rotateZ(18deg); } }
+  @keyframes crownPulse{ to{ scale:1.2; opacity:.38; } }
+  @keyframes crownArrive{ from{ opacity:0; scale:.15; filter:brightness(2.2) drop-shadow(0 0 22px #fff0a9); } 70%{ opacity:1; scale:1.35; } to{ opacity:1; scale:1; } }
+  @keyframes crownBottomToRight{
+    0%{ left:50%; top:93%; opacity:1; scale:.72; }
+    15%{ left:17%; top:82%; scale:1; } 30%{ left:6%; top:50%; } 45%{ left:17%; top:18%; }
+    60%{ left:50%; top:7%; scale:1.12; } 78%{ left:83%; top:18%; } 100%{ left:94%; top:50%; opacity:0; scale:.55; }
+  }
+  @keyframes crownRightToTop{
+    0%{ left:94%; top:50%; opacity:1; scale:.72; }
+    15%{ left:83%; top:82%; scale:1; } 30%{ left:50%; top:93%; } 45%{ left:17%; top:82%; }
+    60%{ left:6%; top:50%; scale:1.12; } 78%{ left:17%; top:18%; } 100%{ left:50%; top:7%; opacity:0; scale:.55; }
+  }
+  @keyframes crownTopToLeft{
+    0%{ left:50%; top:7%; opacity:1; scale:.72; }
+    15%{ left:83%; top:18%; scale:1; } 30%{ left:94%; top:50%; } 45%{ left:83%; top:82%; }
+    60%{ left:50%; top:93%; scale:1.12; } 78%{ left:17%; top:82%; } 100%{ left:6%; top:50%; opacity:0; scale:.55; }
+  }
+  @keyframes crownLeftToBottom{
+    0%{ left:6%; top:50%; opacity:1; scale:.72; }
+    15%{ left:17%; top:18%; scale:1; } 30%{ left:50%; top:7%; } 45%{ left:83%; top:18%; }
+    60%{ left:94%; top:50%; scale:1.12; } 78%{ left:83%; top:82%; } 100%{ left:50%; top:93%; opacity:0; scale:.55; }
+  }
   .trick-slot{
     position:absolute; width:clamp(59px,12vw,93px); aspect-ratio:.714; z-index:3;
     --deal-x:0px; --deal-y:0px; --deal-rot:0deg; --target-rot:0deg;
@@ -211,17 +249,11 @@
     to{ opacity:1; transform:translate(-50%,-50%) rotate(var(--target-rot)) scale(1); filter:blur(0) brightness(1); }
   }
   @keyframes dealShadow{ from{ opacity:0; scale:2.2 .5; } 70%{ opacity:.72; scale:1.2 .8; } to{ opacity:.34; scale:1; } }
-  .deal-packet{
-    position:absolute; left:50%; top:50%; z-index:20; width:clamp(38px,9vw,66px); aspect-ratio:.714;
-    --packet-x:0vw; --packet-y:0vh; --packet-rot:0deg;
-    transform:translate(-50%,-50%); opacity:0; pointer-events:none;
-    animation:packetDeal .72s cubic-bezier(.18,.74,.16,1) both;
+  .deal-deck,.deal-card{
+    position:absolute; left:50%; top:50%; width:clamp(38px,8.4vw,62px); aspect-ratio:.714; pointer-events:none;
   }
-  .deal-packet.pos-top{ --packet-y:-38vh; --packet-rot:180deg; }
-  .deal-packet.pos-bottom{ --packet-y:38vh; }
-  .deal-packet.pos-left{ --packet-x:-42vw; --packet-rot:90deg; }
-  .deal-packet.pos-right{ --packet-x:42vw; --packet-rot:-90deg; }
-  .deal-packet i{
+  .deal-deck{ z-index:19; translate:-50% -50%; filter:drop-shadow(0 10px 13px rgba(0,0,0,.62)); }
+  .deal-deck i,.deal-card i{
     position:absolute; inset:0; display:block; border-radius:8px; border:1px solid rgba(255,232,172,.9);
     background:
       radial-gradient(circle at 50% 50%,rgba(242,197,108,.24),transparent 28%),
@@ -229,19 +261,29 @@
       linear-gradient(145deg,#6d1712,#260605);
     box-shadow:0 8px 18px rgba(0,0,0,.48),inset 0 0 0 3px rgba(62,8,6,.88),inset 0 0 0 5px rgba(225,169,69,.54);
   }
-  .deal-packet i:nth-child(1){ translate:-5px -4px; rotate:-3deg; }
-  .deal-packet i:nth-child(2){ translate:0 -2px; rotate:1deg; }
-  .deal-packet i:nth-child(3){ translate:5px 1px; rotate:4deg; }
-  .deal-packet b{
-    position:absolute; z-index:2; inset:0; display:grid; place-items:center; color:#ffe4a2;
-    font:950 clamp(17px,4vw,27px)/1 Arial,sans-serif; text-shadow:0 2px 4px #250402;
+  .deal-deck i:nth-child(1){ translate:-6px -5px; rotate:-4deg; }
+  .deal-deck i:nth-child(2){ translate:-2px -3px; rotate:-1deg; }
+  .deal-deck i:nth-child(3){ translate:3px 0; rotate:2deg; }
+  .deal-deck b{
+    position:absolute; z-index:3; right:-15px; top:-15px; min-width:31px; height:31px; padding:0 5px;
+    display:grid; place-items:center; color:#2b0a06; background:linear-gradient(#ffe4a2,#d99a3b);
+    border:1px solid #fff0ba; border-radius:999px; font:950 15px/1 Arial,sans-serif;
+    box-shadow:0 4px 13px rgba(0,0,0,.55),0 0 12px rgba(242,197,108,.4);
   }
-  @keyframes packetDeal{
-    0%{ opacity:0; transform:translate(-50%,-50%) scale(.45) rotate(-18deg); filter:blur(2px) brightness(.72); }
-    16%{ opacity:1; }
-    78%{ opacity:1; filter:blur(0) brightness(1.12); }
-    92%{ opacity:1; transform:translate(calc(-50% + var(--packet-x)),calc(-50% + var(--packet-y))) scale(.86) rotate(var(--packet-rot)); }
-    100%{ opacity:0; transform:translate(calc(-50% + var(--packet-x)),calc(-50% + var(--packet-y))) scale(.7) rotate(var(--packet-rot)); }
+  .deal-card{
+    z-index:20; --card-x:0vw; --card-y:0vh; --card-rot:0deg; --card-tilt:0deg;
+    opacity:0; transform:translate(-50%,-50%); animation:singleCardDeal .62s cubic-bezier(.16,.76,.17,1) both;
+  }
+  .deal-card.pos-top{ --card-y:-38vh; --card-rot:180deg; }
+  .deal-card.pos-bottom{ --card-y:38vh; }
+  .deal-card.pos-left{ --card-x:-42vw; --card-rot:90deg; }
+  .deal-card.pos-right{ --card-x:42vw; --card-rot:-90deg; }
+  @keyframes singleCardDeal{
+    0%{ opacity:0; transform:translate(-50%,-50%) scale(.86) rotate(var(--card-tilt)); filter:blur(1px) brightness(.82); }
+    10%{ opacity:1; }
+    74%{ opacity:1; filter:blur(0) brightness(1.12); }
+    91%{ opacity:1; transform:translate(calc(-50% + var(--card-x)),calc(-50% + var(--card-y))) scale(.82) rotate(calc(var(--card-rot) + var(--card-tilt))); }
+    100%{ opacity:0; transform:translate(calc(-50% + var(--card-x)),calc(-50% + var(--card-y))) scale(.7) rotate(calc(var(--card-rot) + var(--card-tilt))); }
   }
   .play-gesture{
     position:absolute; z-index:2; width:clamp(62px,11vw,100px); height:clamp(24px,4vw,38px); border-radius:50%; pointer-events:none;
@@ -538,7 +580,7 @@
     .trump-picker .card{ width:clamp(58px,15.5vw,70px); height:auto; aspect-ratio:.714; font-size:15px; }
   }
   @media (orientation:portrait) and (min-width:600px){
-    body.table-mode .table-board{ background-image:url('assets/hokm-table-tablet.webp'); }
+    body.table-mode .table-board{ background-image:url('assets/hokm-table-tablet.webp?v=11'); }
     .seat.pos-top{ top:6%; }
     .seat.pos-bottom{ bottom:6%; }
     .seat.pos-left{ left:5%; }
@@ -746,6 +788,7 @@ var lastAnimatedActionSeq = 0;
 var lastAnimatedTrickSeq = 0;
 var lastAnimatedCutSeq = 0;
 var lastScheduledDealAudioSeq = '';
+var lastCrownTransferSeq = 0;
 
 function defaultState(){
   return {
@@ -772,6 +815,8 @@ function defaultState(){
     dealStage:null,
     dealSeq:0,
     dealingStartedAt:null,
+    crownTransfer:null,
+    crownTransferSeq:0,
     trickSeq:0,
     actionSeq:0,
     cutEffect:null,
@@ -789,11 +834,13 @@ function normalizeState(st){
   if(typeof st.gameId!=='number') st.gameId=typeof st.updatedAt==='number'?st.updatedAt:Date.now();
   if(typeof st.actionSeq!=='number') st.actionSeq=0;
   if(typeof st.dealSeq!=='number') st.dealSeq=0;
+  if(typeof st.crownTransferSeq!=='number') st.crownTransferSeq=0;
   if(st.dealStage!=='initial' && st.dealStage!=='remainder') st.dealStage=null;
   if(typeof st.dealingStartedAt!=='number') st.dealingStartedAt=null;
   if(st.nextHakemIndex!==null && (!Number.isInteger(st.nextHakemIndex) || st.nextHakemIndex<0 || st.nextHakemIndex>3)) st.nextHakemIndex=null;
   if(typeof st.nextHakemConfirmedAtMatchEnd!=='boolean') st.nextHakemConfirmedAtMatchEnd=false;
   if(!st.cutEffect || typeof st.cutEffect!=='object') st.cutEffect=null;
+  if(!st.crownTransfer || typeof st.crownTransfer!=='object') st.crownTransfer=null;
   return st;
 }
 
@@ -825,6 +872,12 @@ function playTone(freq, duration, volume, delay){
 function playCardSound(delay){ var d=typeof delay==='number'?delay:.39; playTone(520,.085,.14,d); playTone(185,.11,.1,d+.018); }
 function playTrickSound(){ playTone(480,.13,.15,0); playTone(720,.17,.13,.07); }
 function playVictorySound(){ [523,659,784,1047].forEach(function(f,i){ playTone(f,.31,.17,i*.12); }); }
+function playCrownTransferSound(delay){
+  var d=typeof delay==='number'?delay:0;
+  [330,392,466,554,659,784].forEach(function(f,i){ playTone(f,.18,.12,d+i*.34); });
+  playTone(988,.42,.18,d+2.15);
+  playTone(1318,.46,.14,d+2.22);
+}
 function playCutSound(delay){
   var ctx=ensureAudio(); if(!ctx) return;
   if(ctx.state==='suspended') ctx.resume();
@@ -990,6 +1043,7 @@ async function pollTick(){
     var beforeAction = state ? (state.actionSeq||0) : 0;
     var beforePhase = state ? state.phase : null;
     var beforeCutSeq = state && state.cutEffect && state.cutEffect.seq ? state.cutEffect.seq : 0;
+    var beforeCrownSeq = state ? (state.crownTransferSeq||0) : 0;
     var results = await Promise.all([
       storageGet(GAME_KEY,true),
       pollCounter%6===0 ? storageGet(NAMES_KEY,true) : Promise.resolve(null),
@@ -1009,6 +1063,10 @@ async function pollTick(){
         pollFailed = false;
         if((parsed.actionSeq||0)>beforeAction) playCardSound();
         if(parsed.cutEffect && (parsed.cutEffect.seq||0)>beforeCutSeq) playCutSound();
+        if(parsed.crownTransfer && (parsed.crownTransferSeq||0)>beforeCrownSeq && (parsed.crownTransferSeq||0)>lastCrownTransferSeq){
+          lastCrownTransferSeq=parsed.crownTransferSeq||0;
+          if(Date.now()-(parsed.crownTransfer.at||0)<2900) playCrownTransferSound(0);
+        }
         if(parsed.phase==='matchEnd' && beforePhase!=='matchEnd') playVictorySound();
       }catch(e){ pollFailed = true; }
     } else if(!state){
@@ -1111,8 +1169,8 @@ async function persistState(ns){
 }
 
 // ---------- game actions ----------
-var DEAL_INITIAL_MS = 2900;
-var DEAL_REMAINDER_MS = 4300;
+var DEAL_INITIAL_MS = 3150;
+var DEAL_REMAINDER_MS = 4050;
 
 function dealOrder(hakem){
   return [hakem,(hakem+1)%4,(hakem+2)%4,(hakem+3)%4];
@@ -1141,6 +1199,7 @@ async function dealNewHand(bumpRound){
     lastTrickCard: null,
     cutEffect: null,
     handResult: null,
+    crownTransfer: null,
     round: round,
     phase: 'dealing',
     dealStage: 'initial',
@@ -1234,8 +1293,19 @@ async function applyCardPlay(seat, cardIndex){
     ns.matchResult = { team:team, winnerSeat:winSeat };
     ns.turnIndex = null;
     ns.phase = 'matchEnd';
-    if(teamOfSeat(ns.hakemIndex)!==team) ns.hakemIndex = (ns.hakemIndex+1)%4;
+    if(teamOfSeat(ns.hakemIndex)!==team){
+      var previousHakem=ns.hakemIndex;
+      ns.hakemIndex=(ns.hakemIndex+1)%4;
+      ns.crownTransferSeq=(state.crownTransferSeq||0)+1;
+      ns.crownTransfer={from:previousHakem,to:ns.hakemIndex,seq:ns.crownTransferSeq,at:Date.now()};
+    }else{
+      ns.crownTransfer=null;
+    }
     await persistState(ns);
+    if(ns.crownTransfer){
+      lastCrownTransferSeq=ns.crownTransferSeq||0;
+      playCrownTransferSound(.08);
+    }
     playVictorySound();
   } else {
     ns.phase = 'trickResult';
@@ -1299,8 +1369,28 @@ function botChooseCardIndex(hand, trickSoFar, trump){
 }
 function wait(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
 
-function dealPacketDelays(stage){
-  return stage==='initial' ? [0,.5,1,1.5] : [0,.42,.84,1.26,2.1,2.52,2.94,3.36];
+function dealCardPlan(stage,hakem){
+  var order=dealOrder(hakem), plan=[];
+  if(stage==='initial'){
+    for(var seatIndex=0;seatIndex<4;seatIndex++){
+      for(var cardIndex=0;cardIndex<5;cardIndex++){
+        plan.push({seat:order[seatIndex],delay:plan.length*.125});
+      }
+    }
+  }else{
+    for(var round=0;round<2;round++){
+      for(var seatIndex2=0;seatIndex2<4;seatIndex2++){
+        for(var cardIndex2=0;cardIndex2<4;cardIndex2++){
+          var withinRound=seatIndex2*4+cardIndex2;
+          plan.push({seat:order[seatIndex2],delay:(round===0?0:1.85)+withinRound*.095});
+        }
+      }
+    }
+  }
+  return plan;
+}
+function playDealCardSound(){
+  playTone(455,.042,.085,0);
 }
 function scheduleDealAudio(st){
   if(!st || st.phase!=='dealing') return;
@@ -1308,9 +1398,9 @@ function scheduleDealAudio(st){
   if(lastScheduledDealAudioSeq===key) return;
   lastScheduledDealAudioSeq=key;
   var elapsed=Math.max(0,Date.now()-(st.dealingStartedAt||Date.now()));
-  dealPacketDelays(st.dealStage).forEach(function(delay){
-    var remaining=Math.round(delay*1000-elapsed);
-    if(remaining>=-80) setTimeout(function(){ playCardSound(0); },Math.max(0,remaining));
+  dealCardPlan(st.dealStage,st.hakemIndex).forEach(function(card){
+    var remaining=Math.round(card.delay*1000-elapsed);
+    if(remaining>=-60) setTimeout(playDealCardSound,Math.max(0,remaining));
   });
 }
 
@@ -1412,6 +1502,7 @@ async function restartGameConfirm(){
   lastAnimatedTrickSeq = 0;
   lastAnimatedCutSeq = 0;
   lastScheduledDealAudioSeq = '';
+  lastCrownTransferSeq = 0;
   adminOpen = false;
   await persistState(fresh);
 }
@@ -1553,6 +1644,8 @@ function latestSeatMessage(seat){
 function seatMapHtml(opts){
   opts = opts || {};
   var collecting = (state.phase==='trickResult' || state.phase==='matchEnd') && state.lastTrickWinnerSeat!==null;
+  var crownElapsed=state.crownTransfer&&state.crownTransfer.at?Math.max(0,Date.now()-state.crownTransfer.at):99999;
+  var crownTransferActive=!!(state.crownTransfer&&crownElapsed<3100);
   var animateLatest = !!(opts.trick && opts.trick.length && (state.actionSeq||0)>lastAnimatedActionSeq);
   var animateCollection = collecting && (state.trickSeq||0)>lastAnimatedTrickSeq;
   var cutSeq = state.cutEffect && state.cutEffect.seq ? state.cutEffect.seq : 0;
@@ -1563,14 +1656,20 @@ function seatMapHtml(opts){
     var pos = seatPosition(i);
     var active = (opts.activeSeat===i);
     var isHakem = (state.hakemIndex===i);
+    var crownArriving = crownTransferActive && state.crownTransfer.to===i;
     var scoreHit = animateCollection && state.lastTrickWinnerSeat===i;
     var seatMessage = latestSeatMessage(i);
     var bubbleText = seatMessage ? String(seatMessage.text||'') : '';
     if(bubbleText.length>90) bubbleText=bubbleText.slice(0,90)+'\u2026';
-    html += '<div class="seat pos-'+pos+(active?' active':'')+(scoreHit?' score-hit':'')+'">'+
+    var crownSeatStyle=crownArriving?' style="--crown-arrive-delay:'+Math.max(-.68,2.25-crownElapsed/1000).toFixed(3)+'s"':'';
+    html += '<div class="seat pos-'+pos+(active?' active':'')+(scoreHit?' score-hit':'')+(crownArriving?' crown-arriving':'')+'"'+crownSeatStyle+'>'+
       '<div class="chip">'+(isHakem?'<span class="table-crown">'+crownIcon()+'</span>':'')+'<span class="seat-name">'+displayName(i)+'</span>'+trickCountHtml(i)+'</div>'+
       (seatMessage?'<div class="seat-chat">'+escapeHtml(bubbleText)+'</div>':'')+
     '</div>';
+  }
+  if(crownTransferActive){
+    var crownFromPos=seatPosition(state.crownTransfer.from);
+    html += '<div class="crown-flight pos-'+crownFromPos+'" style="animation-delay:-'+(crownElapsed/1000).toFixed(3)+'s" aria-hidden="true">'+crownIcon()+'</div>';
   }
   if(animateCut){
     var cutPos = seatPosition(state.cutEffect.seat);
@@ -1646,25 +1745,15 @@ function renderTrumpPhase(){
 
 function dealAnimationHtml(){
   if(!state || state.phase!=='dealing') return '';
-  var order=dealOrder(state.hakemIndex);
-  var delays=dealPacketDelays(state.dealStage);
   var elapsed=Math.max(0,Date.now()-(state.dealingStartedAt||Date.now()))/1000;
-  var packets=[];
-  if(state.dealStage==='initial'){
-    for(var i=0;i<4;i++) packets.push({seat:order[i],count:5,delay:delays[i]});
-  }else{
-    for(var round=0;round<2;round++){
-      for(var k=0;k<4;k++){
-        var idx=round*4+k;
-        packets.push({seat:order[k],count:4,delay:delays[idx]});
-      }
-    }
-  }
-  return packets.map(function(packet){
-    var delay=packet.delay-elapsed;
-    return '<div class="deal-packet pos-'+seatPosition(packet.seat)+'" style="animation-delay:'+delay.toFixed(3)+'s" aria-hidden="true">'+
-      '<i></i><i></i><i></i><b>'+toFaDigits(packet.count)+'</b></div>';
+  var deckCount=state.dealStage==='initial'?52:32;
+  var deck='<div class="deal-deck" aria-hidden="true"><i></i><i></i><i></i><b>'+toFaDigits(deckCount)+'</b></div>';
+  var cards=dealCardPlan(state.dealStage,state.hakemIndex).map(function(card,index){
+    var delay=card.delay-elapsed;
+    var tilt=((index%5)-2)*1.4;
+    return '<div class="deal-card pos-'+seatPosition(card.seat)+'" style="animation-delay:'+delay.toFixed(3)+'s;--card-tilt:'+tilt+'deg" aria-hidden="true"><i></i></div>';
   }).join('');
+  return deck+cards;
 }
 
 function renderDealingPhase(){
