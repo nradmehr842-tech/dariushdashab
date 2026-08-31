@@ -147,18 +147,20 @@
   .table-crown{ display:inline-flex; width:clamp(32px,5.5vw,44px); color:var(--game-label-color); filter:drop-shadow(0 2px 2px #2c0c00) drop-shadow(0 0 6px rgba(242,197,108,.32)); }
   .seat.active .chip{ color:#ffe3a3; filter:drop-shadow(0 0 8px rgba(255,200,90,.9)); animation:turnGlow 1.35s ease-in-out infinite; }
   @keyframes turnGlow{ 50%{ filter:drop-shadow(0 0 14px rgba(255,210,110,1)); } }
-  .trick-count{
-    display:inline-flex; align-items:center; justify-content:center; width:1.36em; height:1.36em; flex:none; direction:ltr;
-    color:var(--game-label-color); background:linear-gradient(145deg,rgba(43,27,22,.9),rgba(17,10,9,.94));
-    border:1px solid rgba(235,185,91,.72); border-radius:.38em;
-    font-family:Arial,sans-serif; font-size:var(--game-number-size); line-height:1; font-weight:950;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 3px 8px rgba(0,0,0,.55),0 0 8px rgba(221,157,62,.2);
-    text-shadow:0 2px 2px #160b07;
+  .won-cards{ display:inline-flex; align-items:center; min-width:12px; height:24px; flex:none; direction:ltr; padding:1px 2px; }
+  .won-card{
+    width:15px; height:22px; flex:none; margin-left:-7px; border:1px solid rgba(255,226,155,.9); border-radius:3px;
+    background:
+      radial-gradient(circle,rgba(245,199,106,.34),transparent 42%),
+      repeating-linear-gradient(45deg,rgba(255,223,152,.2) 0 1px,transparent 1px 4px),
+      linear-gradient(145deg,#731811,#260504);
+    box-shadow:0 2px 5px rgba(0,0,0,.65),inset 0 0 0 2px rgba(31,3,2,.55);
   }
-  .seat.score-hit .trick-count{ animation:scoreCatch 1.15s cubic-bezier(.2,.8,.2,1) 1.3s both; }
+  .won-card:first-child{ margin-left:0; }
+  .seat.score-hit .won-card:last-child{ animation:scoreCatch 1.15s cubic-bezier(.2,.8,.2,1) 1.3s both; }
   @keyframes scoreCatch{
-    0%{ transform:scale(1); box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 3px 8px rgba(0,0,0,.55); }
-    35%{ transform:scale(1.42); color:#fff3b0; border-color:#ffe39a; box-shadow:0 0 9px #ffd574,0 0 23px rgba(242,197,108,.9); }
+    0%{ transform:scale(1); box-shadow:0 2px 5px rgba(0,0,0,.65); }
+    35%{ transform:scale(1.65) translateY(-3px); border-color:#fff0ae; box-shadow:0 0 9px #ffd574,0 0 23px rgba(242,197,108,.95); }
     100%{ transform:scale(1); }
   }
   .seat-chat{
@@ -203,9 +205,37 @@
   .crown-flight.pos-top{ animation-name:crownTopToLeft; }
   .crown-flight.pos-left{ animation-name:crownLeftToBottom; }
   .seat.crown-arriving .table-crown{ animation:crownArrive .68s cubic-bezier(.18,.88,.22,1.35) both; animation-delay:var(--crown-arrive-delay,2.25s); }
+  .seat.crown-celebrating .table-crown{ animation:crownChampion 1s cubic-bezier(.18,.88,.22,1.35) 3 both; }
+  .crown-victory{
+    position:absolute; z-index:29; width:clamp(58px,11vw,96px); color:#ffe079; pointer-events:none;
+    translate:-50% -50%; filter:drop-shadow(0 3px 2px #4b1400) drop-shadow(0 0 18px #ffd15c);
+    animation:crownVictoryMain 3.65s cubic-bezier(.2,.82,.18,1) both;
+  }
+  .crown-victory.pos-top{ left:50%; top:7%; }
+  .crown-victory.pos-bottom{ left:50%; top:93%; }
+  .crown-victory.pos-left{ left:6%; top:50%; }
+  .crown-victory.pos-right{ left:94%; top:50%; }
+  .crown-victory>svg{ display:block; animation:crownVictorySpin 1.05s ease-in-out 3; }
+  .crown-victory::before,.crown-victory::after{
+    content:""; position:absolute; inset:-38%; border:3px solid rgba(255,222,120,.88); border-radius:50%;
+    box-shadow:0 0 15px #ffd574,0 0 38px rgba(255,189,61,.82),inset 0 0 20px rgba(255,230,148,.65);
+    animation:crownVictoryRing 1.2s ease-out 3 both;
+  }
+  .crown-victory::after{ inset:-72%; border-width:2px; animation-delay:.14s; }
+  .crown-victory .spark{
+    position:absolute; left:50%; top:50%; width:7px; height:7px; margin:-3px; border-radius:1px;
+    background:#fff1a8; box-shadow:0 0 7px #fff,0 0 14px #ffbf36;
+    transform:rotate(var(--spark-angle)) translateY(-18px) rotate(45deg);
+    animation:crownSpark 1.25s ease-out var(--spark-delay) 3 both;
+  }
   @keyframes crownSpin{ to{ transform:rotateY(360deg) rotateZ(18deg); } }
   @keyframes crownPulse{ to{ scale:1.2; opacity:.38; } }
   @keyframes crownArrive{ from{ opacity:0; scale:.15; filter:brightness(2.2) drop-shadow(0 0 22px #fff0a9); } 70%{ opacity:1; scale:1.35; } to{ opacity:1; scale:1; } }
+  @keyframes crownChampion{ 0%,100%{ scale:1; filter:drop-shadow(0 0 6px #ffd574); } 45%{ scale:1.55; color:#fff2ad; filter:drop-shadow(0 0 22px #fff0a9); } }
+  @keyframes crownVictoryMain{ 0%{ opacity:0; scale:.1; rotate:-35deg; } 14%{ opacity:1; scale:1.35; rotate:12deg; } 78%{ opacity:1; scale:1.1; } 100%{ opacity:0; scale:1.7; filter:brightness(1.8) drop-shadow(0 0 34px #fff0a9); } }
+  @keyframes crownVictorySpin{ 0%,100%{ transform:rotateY(0deg) rotateZ(-7deg); } 50%{ transform:rotateY(360deg) rotateZ(9deg) scale(1.18); } }
+  @keyframes crownVictoryRing{ 0%{ opacity:0; scale:.25; rotate:0deg; } 24%{ opacity:1; } 100%{ opacity:0; scale:1.75; rotate:150deg; } }
+  @keyframes crownSpark{ 0%{ opacity:0; transform:rotate(var(--spark-angle)) translateY(-12px) rotate(45deg) scale(.1); } 22%{ opacity:1; } 100%{ opacity:0; transform:rotate(var(--spark-angle)) translateY(-92px) rotate(225deg) scale(1.3); } }
   @keyframes crownBottomToRight{
     0%{ left:50%; top:93%; opacity:1; scale:.72; }
     15%{ left:17%; top:82%; scale:1; } 30%{ left:6%; top:50%; } 45%{ left:17%; top:18%; }
@@ -272,7 +302,7 @@
   }
   .deal-card{
     z-index:20; --card-x:0vw; --card-y:0vh; --card-rot:0deg; --card-tilt:0deg;
-    opacity:0; transform:translate(-50%,-50%); animation:singleCardDeal .62s cubic-bezier(.16,.76,.17,1) both;
+    opacity:0; transform:translate(-50%,-50%); animation:singleCardDeal 1.24s cubic-bezier(.16,.76,.17,1) both;
   }
   .deal-card.pos-top{ --card-y:-38vh; --card-rot:180deg; }
   .deal-card.pos-bottom{ --card-y:38vh; }
@@ -555,7 +585,6 @@
     .seat.pos-left{ left:2%; }
     .seat.pos-right{ right:2%; }
     .seat .chip{ font-size:var(--game-label-size); }
-    .trick-count{ font-size:var(--game-number-size); }
     .hand-row{ gap:3px; }
     .hand-row .card{ max-width:51px; font-size:12px; }
     .card .corner.tl{ top:4px; left:4px; }
@@ -772,6 +801,7 @@ var lastSeenChatCount = 0;
 var pollFailed = false;
 var autoAdvanceScheduled = {};
 var dealAdvanceScheduled = {};
+var matchAdvanceScheduled = {};
 var adminAuthenticated = false;
 var adminLoginOpen = false;
 var adminLoginError = '';
@@ -812,6 +842,7 @@ function defaultState(){
     lastTrickCard:null,
     handResult:null,
     matchResult:null,
+    matchEndedAt:null,
     dealStage:null,
     dealSeq:0,
     dealingStartedAt:null,
@@ -837,6 +868,7 @@ function normalizeState(st){
   if(typeof st.crownTransferSeq!=='number') st.crownTransferSeq=0;
   if(st.dealStage!=='initial' && st.dealStage!=='remainder') st.dealStage=null;
   if(typeof st.dealingStartedAt!=='number') st.dealingStartedAt=null;
+  if(typeof st.matchEndedAt!=='number') st.matchEndedAt=null;
   if(st.nextHakemIndex!==null && (!Number.isInteger(st.nextHakemIndex) || st.nextHakemIndex<0 || st.nextHakemIndex>3)) st.nextHakemIndex=null;
   if(typeof st.nextHakemConfirmedAtMatchEnd!=='boolean') st.nextHakemConfirmedAtMatchEnd=false;
   if(!st.cutEffect || typeof st.cutEffect!=='object') st.cutEffect=null;
@@ -877,6 +909,13 @@ function playCrownTransferSound(delay){
   [330,392,466,554,659,784].forEach(function(f,i){ playTone(f,.18,.12,d+i*.34); });
   playTone(988,.42,.18,d+2.15);
   playTone(1318,.46,.14,d+2.22);
+}
+function playCrownVictorySound(delay){
+  var d=typeof delay==='number'?delay:0;
+  [523,659,784].forEach(function(f,i){ playTone(f,.26,.17,d+i*.1); });
+  [659,831,1047].forEach(function(f,i){ playTone(f,.32,.16,d+.52+i*.1); });
+  [784,988,1318].forEach(function(f,i){ playTone(f,.5,.18,d+1.08+i*.09); });
+  playTone(1568,.8,.16,d+1.72);
 }
 function playCutSound(delay){
   var ctx=ensureAudio(); if(!ctx) return;
@@ -1028,6 +1067,7 @@ async function afterIdentityChosen(){
     scheduleDealAudio(state);
   }
   if(state.phase==='trickResult') scheduleAutoAdvance(state.trickSeq);
+  if(state.phase==='matchEnd') scheduleNextMatch(state.crownTransferSeq,state.gameId);
   maybeTriggerBot();
   if(pollTimer) clearInterval(pollTimer);
   if(presenceTimer) clearInterval(presenceTimer);
@@ -1065,7 +1105,10 @@ async function pollTick(){
         if(parsed.cutEffect && (parsed.cutEffect.seq||0)>beforeCutSeq) playCutSound();
         if(parsed.crownTransfer && (parsed.crownTransferSeq||0)>beforeCrownSeq && (parsed.crownTransferSeq||0)>lastCrownTransferSeq){
           lastCrownTransferSeq=parsed.crownTransferSeq||0;
-          if(Date.now()-(parsed.crownTransfer.at||0)<2900) playCrownTransferSound(0);
+          if(Date.now()-(parsed.crownTransfer.at||0)<3900){
+            if(parsed.crownTransfer.mode==='stay') playCrownVictorySound(0);
+            else playCrownTransferSound(0);
+          }
         }
         if(parsed.phase==='matchEnd' && beforePhase!=='matchEnd') playVictorySound();
       }catch(e){ pollFailed = true; }
@@ -1080,6 +1123,7 @@ async function pollTick(){
       scheduleDealAudio(state);
     }
     if(state && state.phase==='trickResult') scheduleAutoAdvance(state.trickSeq);
+    if(state && state.phase==='matchEnd') scheduleNextMatch(state.crownTransferSeq,state.gameId);
     maybeTriggerBot();
     // Only touch the DOM when something a person would actually notice has changed,
     // otherwise the periodic poll makes the screen flicker for no reason.
@@ -1169,8 +1213,9 @@ async function persistState(ns){
 }
 
 // ---------- game actions ----------
-var DEAL_INITIAL_MS = 3150;
-var DEAL_REMAINDER_MS = 4050;
+var DEAL_INITIAL_MS = 6300;
+var DEAL_REMAINDER_MS = 8100;
+var MATCH_AUTO_START_MS = 4300;
 
 function dealOrder(hakem){
   return [hakem,(hakem+1)%4,(hakem+2)%4,(hakem+3)%4];
@@ -1199,6 +1244,8 @@ async function dealNewHand(bumpRound){
     lastTrickCard: null,
     cutEffect: null,
     handResult: null,
+    matchResult: null,
+    matchEndedAt: null,
     crownTransfer: null,
     round: round,
     phase: 'dealing',
@@ -1291,22 +1338,26 @@ async function applyCardPlay(seat, cardIndex){
     ns.league = ns.league.slice();
     ns.league[team] += 1;
     ns.matchResult = { team:team, winnerSeat:winSeat };
+    ns.matchEndedAt = Date.now();
     ns.turnIndex = null;
     ns.phase = 'matchEnd';
     if(teamOfSeat(ns.hakemIndex)!==team){
       var previousHakem=ns.hakemIndex;
       ns.hakemIndex=(ns.hakemIndex+1)%4;
       ns.crownTransferSeq=(state.crownTransferSeq||0)+1;
-      ns.crownTransfer={from:previousHakem,to:ns.hakemIndex,seq:ns.crownTransferSeq,at:Date.now()};
+      ns.crownTransfer={from:previousHakem,to:ns.hakemIndex,mode:'move',seq:ns.crownTransferSeq,at:Date.now()};
     }else{
-      ns.crownTransfer=null;
+      ns.crownTransferSeq=(state.crownTransferSeq||0)+1;
+      ns.crownTransfer={from:ns.hakemIndex,to:ns.hakemIndex,mode:'stay',seq:ns.crownTransferSeq,at:Date.now()};
     }
     await persistState(ns);
     if(ns.crownTransfer){
       lastCrownTransferSeq=ns.crownTransferSeq||0;
-      playCrownTransferSound(.08);
+      if(ns.crownTransfer.mode==='stay') playCrownVictorySound(.08);
+      else playCrownTransferSound(.08);
     }
     playVictorySound();
+    scheduleNextMatch(ns.crownTransferSeq,ns.gameId);
   } else {
     ns.phase = 'trickResult';
     await persistState(ns);
@@ -1374,7 +1425,7 @@ function dealCardPlan(stage,hakem){
   if(stage==='initial'){
     for(var seatIndex=0;seatIndex<4;seatIndex++){
       for(var cardIndex=0;cardIndex<5;cardIndex++){
-        plan.push({seat:order[seatIndex],delay:plan.length*.125});
+        plan.push({seat:order[seatIndex],delay:plan.length*.25});
       }
     }
   }else{
@@ -1382,7 +1433,7 @@ function dealCardPlan(stage,hakem){
       for(var seatIndex2=0;seatIndex2<4;seatIndex2++){
         for(var cardIndex2=0;cardIndex2<4;cardIndex2++){
           var withinRound=seatIndex2*4+cardIndex2;
-          plan.push({seat:order[seatIndex2],delay:(round===0?0:1.85)+withinRound*.095});
+          plan.push({seat:order[seatIndex2],delay:(round===0?0:3.7)+withinRound*.19});
         }
       }
     }
@@ -1450,6 +1501,20 @@ async function autoAdvanceDeal(seq,gameId,stage){
   maybeTriggerBot();
 }
 
+function scheduleNextMatch(crownSeq,gameId){
+  if(!state || state.phase!=='matchEnd') return;
+  var timerKey=gameId+':'+crownSeq;
+  if(matchAdvanceScheduled[timerKey]) return;
+  matchAdvanceScheduled[timerKey]=true;
+  var endedAt=state.matchEndedAt||state.updatedAt||Date.now();
+  var elapsed=Math.max(0,Date.now()-endedAt);
+  setTimeout(function(){ autoStartNextMatch(crownSeq,gameId); },Math.max(30,MATCH_AUTO_START_MS-elapsed));
+}
+async function autoStartNextMatch(crownSeq,gameId){
+  if(!state || state.gameId!==gameId || state.phase!=='matchEnd' || (state.crownTransferSeq||0)!==crownSeq) return;
+  await dealNewHand(true);
+}
+
 function scheduleAutoAdvance(seq){
   var gameId = state && state.gameId;
   var timerKey = gameId+':'+seq;
@@ -1496,6 +1561,7 @@ async function restartGameConfirm(){
   fresh.gameId = Date.now();
   autoAdvanceScheduled = {};
   dealAdvanceScheduled = {};
+  matchAdvanceScheduled = {};
   botActionInFlight = false;
   humanPlayInFlight = false;
   lastAnimatedActionSeq = 0;
@@ -1570,7 +1636,9 @@ function numberPipsHtml(card){
 
 function trickCountHtml(seat){
   var won=(state.seatTricks&&state.seatTricks[seat])||0;
-  return '<span class="trick-count" aria-label="'+won+' دست برده‌شده" title="دست برده‌شده: '+won+'">'+toFaDigits(won)+'</span>';
+  var cards='';
+  for(var i=0;i<won;i++) cards+='<i class="won-card"></i>';
+  return '<span class="won-cards" aria-label="'+won+' دست برده‌شده" title="دست برده‌شده: '+won+'">'+cards+'</span>';
 }
 
 function topbarHtml(){
@@ -1645,7 +1713,8 @@ function seatMapHtml(opts){
   opts = opts || {};
   var collecting = (state.phase==='trickResult' || state.phase==='matchEnd') && state.lastTrickWinnerSeat!==null;
   var crownElapsed=state.crownTransfer&&state.crownTransfer.at?Math.max(0,Date.now()-state.crownTransfer.at):99999;
-  var crownTransferActive=!!(state.crownTransfer&&crownElapsed<3100);
+  var crownStay=!!(state.crownTransfer&&state.crownTransfer.mode==='stay');
+  var crownTransferActive=!!(state.crownTransfer&&crownElapsed<(crownStay?3900:3100));
   var animateLatest = !!(opts.trick && opts.trick.length && (state.actionSeq||0)>lastAnimatedActionSeq);
   var animateCollection = collecting && (state.trickSeq||0)>lastAnimatedTrickSeq;
   var cutSeq = state.cutEffect && state.cutEffect.seq ? state.cutEffect.seq : 0;
@@ -1656,20 +1725,27 @@ function seatMapHtml(opts){
     var pos = seatPosition(i);
     var active = (opts.activeSeat===i);
     var isHakem = (state.hakemIndex===i);
-    var crownArriving = crownTransferActive && state.crownTransfer.to===i;
+    var crownArriving = crownTransferActive && !crownStay && state.crownTransfer.to===i;
+    var crownCelebrating = crownTransferActive && crownStay && state.crownTransfer.to===i;
     var scoreHit = animateCollection && state.lastTrickWinnerSeat===i;
     var seatMessage = latestSeatMessage(i);
     var bubbleText = seatMessage ? String(seatMessage.text||'') : '';
     if(bubbleText.length>90) bubbleText=bubbleText.slice(0,90)+'\u2026';
     var crownSeatStyle=crownArriving?' style="--crown-arrive-delay:'+Math.max(-.68,2.25-crownElapsed/1000).toFixed(3)+'s"':'';
-    html += '<div class="seat pos-'+pos+(active?' active':'')+(scoreHit?' score-hit':'')+(crownArriving?' crown-arriving':'')+'"'+crownSeatStyle+'>'+
+    html += '<div class="seat pos-'+pos+(active?' active':'')+(scoreHit?' score-hit':'')+(crownArriving?' crown-arriving':'')+(crownCelebrating?' crown-celebrating':'')+'"'+crownSeatStyle+'>'+
       '<div class="chip">'+(isHakem?'<span class="table-crown">'+crownIcon()+'</span>':'')+'<span class="seat-name">'+displayName(i)+'</span>'+trickCountHtml(i)+'</div>'+
       (seatMessage?'<div class="seat-chat">'+escapeHtml(bubbleText)+'</div>':'')+
     '</div>';
   }
   if(crownTransferActive){
     var crownFromPos=seatPosition(state.crownTransfer.from);
-    html += '<div class="crown-flight pos-'+crownFromPos+'" style="animation-delay:-'+(crownElapsed/1000).toFixed(3)+'s" aria-hidden="true">'+crownIcon()+'</div>';
+    if(crownStay){
+      var sparks='';
+      for(var spark=0;spark<12;spark++) sparks+='<i class="spark" style="--spark-angle:'+(spark*30)+'deg;--spark-delay:'+((spark%4)*.07)+'s"></i>';
+      html += '<div class="crown-victory pos-'+crownFromPos+'" style="animation-delay:-'+(crownElapsed/1000).toFixed(3)+'s" aria-hidden="true">'+crownIcon()+sparks+'</div>';
+    }else{
+      html += '<div class="crown-flight pos-'+crownFromPos+'" style="animation-delay:-'+(crownElapsed/1000).toFixed(3)+'s" aria-hidden="true">'+crownIcon()+'</div>';
+    }
   }
   if(animateCut){
     var cutPos = seatPosition(state.cutEffect.seat);
@@ -1814,8 +1890,7 @@ function renderHandEndPhase(){
 
 function renderMatchEndPhase(){
   var mr = state.matchResult;
-  var restart = (myIdentity===0 && adminAuthenticated) ? '<button class="next-hand-fab" onclick="backToLobby()" aria-label="بازی تازه">↻</button>' : '';
-  return '<div class="screen game-screen">'+seatMapHtml({activeSeat:mr.winnerSeat,trick:state.currentTrick,centerTrump:false,overlayHtml:restart})+'</div>';
+  return '<div class="screen game-screen">'+seatMapHtml({activeSeat:mr.winnerSeat,trick:state.currentTrick,centerTrump:false})+'</div>';
 }
 
 function chatFabIcon(){
