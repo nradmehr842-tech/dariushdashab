@@ -147,18 +147,19 @@
   .table-crown{ display:inline-flex; width:clamp(32px,5.5vw,44px); color:var(--game-label-color); filter:drop-shadow(0 2px 2px #2c0c00) drop-shadow(0 0 6px rgba(242,197,108,.32)); }
   .seat.active .chip{ color:#ffe3a3; filter:drop-shadow(0 0 8px rgba(255,200,90,.9)); animation:turnGlow 1.35s ease-in-out infinite; }
   @keyframes turnGlow{ 50%{ filter:drop-shadow(0 0 14px rgba(255,210,110,1)); } }
-  .trick-count{
-    display:inline-flex; align-items:center; justify-content:center; width:1.36em; height:1.36em; flex:none; direction:ltr;
-    color:var(--game-label-color); background:linear-gradient(145deg,rgba(43,27,22,.9),rgba(17,10,9,.94));
-    border:1px solid rgba(235,185,91,.72); border-radius:.38em;
-    font-family:Arial,sans-serif; font-size:var(--game-number-size); line-height:1; font-weight:950;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 3px 8px rgba(0,0,0,.55),0 0 8px rgba(221,157,62,.2);
-    text-shadow:0 2px 2px #160b07;
+  .won-cards{ display:inline-flex; align-items:center; min-width:12px; height:20px; gap:3px; flex:none; direction:ltr; padding:1px 2px; }
+  .won-card{
+    width:11px; height:17px; flex:none; border:1px solid rgba(255,226,155,.9); border-radius:2px;
+    background:
+      radial-gradient(circle,rgba(245,199,106,.34),transparent 42%),
+      repeating-linear-gradient(45deg,rgba(255,223,152,.2) 0 1px,transparent 1px 4px),
+      linear-gradient(145deg,#731811,#260504);
+    box-shadow:0 2px 5px rgba(0,0,0,.65),inset 0 0 0 2px rgba(31,3,2,.55);
   }
-  .seat.score-hit .trick-count{ animation:scoreCatch 1.15s cubic-bezier(.2,.8,.2,1) 1.3s both; }
+  .seat.score-hit .won-card:last-child{ animation:scoreCatch 1.15s cubic-bezier(.2,.8,.2,1) 1.3s both; }
   @keyframes scoreCatch{
-    0%{ transform:scale(1); box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 3px 8px rgba(0,0,0,.55); }
-    35%{ transform:scale(1.42); color:#fff3b0; border-color:#ffe39a; box-shadow:0 0 9px #ffd574,0 0 23px rgba(242,197,108,.9); }
+    0%{ transform:scale(1); box-shadow:0 2px 5px rgba(0,0,0,.65); }
+    35%{ transform:scale(1.65) translateY(-3px); border-color:#fff0ae; box-shadow:0 0 9px #ffd574,0 0 23px rgba(242,197,108,.95); }
     100%{ transform:scale(1); }
   }
   .seat-chat{
@@ -188,8 +189,91 @@
   .hakem-crown.pos-left{ left:4.6%; top:50%; transform:translate(-50%,-50%) rotate(90deg); }
   .hakem-crown.pos-right{ right:4.6%; top:50%; transform:translate(50%,-50%) rotate(-90deg); }
   @keyframes crownFloat{ 50%{ filter:drop-shadow(0 5px 4px #321200) drop-shadow(0 0 15px rgba(255,208,93,1)); } }
+  .crown-flight{
+    position:absolute; z-index:31; width:clamp(92px,20vw,180px); height:auto; color:#ffe27d; pointer-events:none;
+    translate:-50% -50%; filter:drop-shadow(0 8px 6px #321200) drop-shadow(0 0 30px rgba(255,209,92,1));
+    animation-duration:3.2s; animation-timing-function:cubic-bezier(.16,.78,.14,1); animation-fill-mode:both;
+  }
+  .crown-flight>svg{ display:block; animation:crownDropSpin .72s ease-in-out 4; }
+  .crown-flight::before,.crown-flight::after{
+    content:""; position:absolute; inset:-38%; border-radius:50%; border:4px solid rgba(255,232,151,.92);
+    box-shadow:0 0 25px #fff0a9,0 0 65px rgba(255,190,48,.92),inset 0 0 26px rgba(255,222,120,.78);
+    animation:crownDropRing 1.05s ease-out 3 both;
+  }
+  .crown-flight::after{ inset:-70%; border-width:2px; animation-delay:.12s; }
+  .crown-flight .spark{
+    position:absolute; left:50%; top:50%; width:8px; height:8px; margin:-4px; border-radius:1px;
+    background:#fff5bd; box-shadow:0 0 8px #fff,0 0 18px #ffb81f;
+    transform:rotate(var(--spark-angle)) translateY(-28px) rotate(45deg);
+    animation:crownDropSpark 1.1s ease-out var(--spark-delay) 3 both;
+  }
+  .crown-flight.pos-top{ animation-name:crownDropToTop; }
+  .crown-flight.pos-bottom{ animation-name:crownDropToBottom; }
+  .crown-flight.pos-left{ animation-name:crownDropToLeft; }
+  .crown-flight.pos-right{ animation-name:crownDropToRight; }
+  .seat.crown-arriving .table-crown{ animation:crownArrive .78s cubic-bezier(.18,.88,.22,1.35) both; animation-delay:var(--crown-arrive-delay,2.85s); }
+  .seat.crown-celebrating .table-crown{ animation:crownChampion 1s cubic-bezier(.18,.88,.22,1.35) 3 both; }
+  .crown-victory{
+    position:absolute; z-index:29; width:clamp(58px,11vw,96px); color:#ffe079; pointer-events:none;
+    translate:-50% -50%; filter:drop-shadow(0 3px 2px #4b1400) drop-shadow(0 0 18px #ffd15c);
+    animation:crownVictoryMain 3.65s cubic-bezier(.2,.82,.18,1) both;
+  }
+  .crown-victory.pos-top{ left:50%; top:7%; }
+  .crown-victory.pos-bottom{ left:50%; top:93%; }
+  .crown-victory.pos-left{ left:6%; top:50%; }
+  .crown-victory.pos-right{ left:94%; top:50%; }
+  .crown-victory>svg{ display:block; animation:crownVictorySpin 1.05s ease-in-out 3; }
+  .crown-victory::before,.crown-victory::after{
+    content:""; position:absolute; inset:-38%; border:3px solid rgba(255,222,120,.88); border-radius:50%;
+    box-shadow:0 0 15px #ffd574,0 0 38px rgba(255,189,61,.82),inset 0 0 20px rgba(255,230,148,.65);
+    animation:crownVictoryRing 1.2s ease-out 3 both;
+  }
+  .crown-victory::after{ inset:-72%; border-width:2px; animation-delay:.14s; }
+  .crown-victory .spark{
+    position:absolute; left:50%; top:50%; width:7px; height:7px; margin:-3px; border-radius:1px;
+    background:#fff1a8; box-shadow:0 0 7px #fff,0 0 14px #ffbf36;
+    transform:rotate(var(--spark-angle)) translateY(-18px) rotate(45deg);
+    animation:crownSpark 1.25s ease-out var(--spark-delay) 3 both;
+  }
+  @keyframes crownDropSpin{ 0%,100%{ transform:rotateY(0deg) rotateZ(-9deg); } 50%{ transform:rotateY(360deg) rotateZ(11deg) scale(1.1); } }
+  @keyframes crownDropRing{ 0%{ opacity:0; scale:.18; rotate:0deg; } 24%{ opacity:1; } 100%{ opacity:0; scale:1.85; rotate:160deg; } }
+  @keyframes crownDropSpark{ 0%{ opacity:0; transform:rotate(var(--spark-angle)) translateY(-18px) rotate(45deg) scale(.1); } 22%{ opacity:1; } 100%{ opacity:0; transform:rotate(var(--spark-angle)) translateY(-135px) rotate(225deg) scale(1.4); } }
+  @keyframes crownArrive{ from{ opacity:0; scale:.15; filter:brightness(2.2) drop-shadow(0 0 22px #fff0a9); } 70%{ opacity:1; scale:1.35; } to{ opacity:1; scale:1; } }
+  @keyframes crownChampion{ 0%,100%{ scale:1; filter:drop-shadow(0 0 6px #ffd574); } 45%{ scale:1.55; color:#fff2ad; filter:drop-shadow(0 0 22px #fff0a9); } }
+  @keyframes crownVictoryMain{ 0%{ opacity:0; scale:.1; rotate:-35deg; } 14%{ opacity:1; scale:1.35; rotate:12deg; } 78%{ opacity:1; scale:1.1; } 100%{ opacity:0; scale:1.7; filter:brightness(1.8) drop-shadow(0 0 34px #fff0a9); } }
+  @keyframes crownVictorySpin{ 0%,100%{ transform:rotateY(0deg) rotateZ(-7deg); } 50%{ transform:rotateY(360deg) rotateZ(9deg) scale(1.18); } }
+  @keyframes crownVictoryRing{ 0%{ opacity:0; scale:.25; rotate:0deg; } 24%{ opacity:1; } 100%{ opacity:0; scale:1.75; rotate:150deg; } }
+  @keyframes crownSpark{ 0%{ opacity:0; transform:rotate(var(--spark-angle)) translateY(-12px) rotate(45deg) scale(.1); } 22%{ opacity:1; } 100%{ opacity:0; transform:rotate(var(--spark-angle)) translateY(-92px) rotate(225deg) scale(1.3); } }
+  @keyframes crownDropToTop{
+    0%{ left:50%; top:-22%; opacity:0; scale:4.8; filter:blur(7px) brightness(2.2) drop-shadow(0 0 45px #fff2a6); }
+    16%{ left:50%; top:18%; opacity:1; scale:3.5; filter:blur(0) brightness(1.7) drop-shadow(0 0 42px #ffd15c); }
+    48%{ left:50%; top:48%; scale:2.15; } 74%{ left:50%; top:23%; scale:1.35; }
+    90%{ left:50%; top:7%; opacity:1; scale:.78; filter:brightness(2.4) drop-shadow(0 0 50px #fff0a9); }
+    100%{ left:50%; top:7%; opacity:0; scale:.38; }
+  }
+  @keyframes crownDropToBottom{
+    0%{ left:50%; top:-22%; opacity:0; scale:4.8; filter:blur(7px) brightness(2.2) drop-shadow(0 0 45px #fff2a6); }
+    16%{ left:50%; top:18%; opacity:1; scale:3.5; filter:blur(0) brightness(1.7) drop-shadow(0 0 42px #ffd15c); }
+    48%{ left:50%; top:48%; scale:2.15; } 74%{ left:50%; top:73%; scale:1.35; }
+    90%{ left:50%; top:93%; opacity:1; scale:.78; filter:brightness(2.4) drop-shadow(0 0 50px #fff0a9); }
+    100%{ left:50%; top:93%; opacity:0; scale:.38; }
+  }
+  @keyframes crownDropToLeft{
+    0%{ left:50%; top:-22%; opacity:0; scale:4.8; filter:blur(7px) brightness(2.2) drop-shadow(0 0 45px #fff2a6); }
+    16%{ left:50%; top:18%; opacity:1; scale:3.5; filter:blur(0) brightness(1.7) drop-shadow(0 0 42px #ffd15c); }
+    48%{ left:50%; top:48%; scale:2.15; } 74%{ left:24%; top:50%; scale:1.35; }
+    90%{ left:6%; top:50%; opacity:1; scale:.78; filter:brightness(2.4) drop-shadow(0 0 50px #fff0a9); }
+    100%{ left:6%; top:50%; opacity:0; scale:.38; }
+  }
+  @keyframes crownDropToRight{
+    0%{ left:50%; top:-22%; opacity:0; scale:4.8; filter:blur(7px) brightness(2.2) drop-shadow(0 0 45px #fff2a6); }
+    16%{ left:50%; top:18%; opacity:1; scale:3.5; filter:blur(0) brightness(1.7) drop-shadow(0 0 42px #ffd15c); }
+    48%{ left:50%; top:48%; scale:2.15; } 74%{ left:76%; top:50%; scale:1.35; }
+    90%{ left:94%; top:50%; opacity:1; scale:.78; filter:brightness(2.4) drop-shadow(0 0 50px #fff0a9); }
+    100%{ left:94%; top:50%; opacity:0; scale:.38; }
+  }
   .trick-slot{
-    position:absolute; width:clamp(78px,16vw,126px); aspect-ratio:.714; z-index:3;
+    position:absolute; width:clamp(59px,12vw,93px); aspect-ratio:.714; z-index:3;
     --deal-x:0px; --deal-y:0px; --deal-rot:0deg; --target-rot:0deg;
     transform:translate(-50%,-50%) rotate(var(--target-rot));
   }
@@ -211,6 +295,36 @@
     to{ opacity:1; transform:translate(-50%,-50%) rotate(var(--target-rot)) scale(1); filter:blur(0) brightness(1); }
   }
   @keyframes dealShadow{ from{ opacity:0; scale:2.2 .5; } 70%{ opacity:.72; scale:1.2 .8; } to{ opacity:.34; scale:1; } }
+  .deal-deck,.deal-card{
+    position:absolute; left:50%; top:50%; width:clamp(38px,8.4vw,62px); aspect-ratio:.714; pointer-events:none;
+  }
+  .deal-deck{ z-index:19; translate:-50% -50%; filter:drop-shadow(0 10px 13px rgba(0,0,0,.62)); }
+  .deal-deck i,.deal-card i{
+    position:absolute; inset:0; display:block; border-radius:8px; border:1px solid rgba(255,232,172,.9);
+    background:
+      radial-gradient(circle at 50% 50%,rgba(242,197,108,.24),transparent 28%),
+      repeating-linear-gradient(45deg,rgba(255,220,145,.17) 0 2px,transparent 2px 7px),
+      linear-gradient(145deg,#6d1712,#260605);
+    box-shadow:0 8px 18px rgba(0,0,0,.48),inset 0 0 0 3px rgba(62,8,6,.88),inset 0 0 0 5px rgba(225,169,69,.54);
+  }
+  .deal-deck i:nth-child(1){ translate:-6px -5px; rotate:-4deg; }
+  .deal-deck i:nth-child(2){ translate:-2px -3px; rotate:-1deg; }
+  .deal-deck i:nth-child(3){ translate:3px 0; rotate:2deg; }
+  .deal-card{
+    z-index:20; --card-x:0vw; --card-y:0vh; --card-rot:0deg; --card-tilt:0deg;
+    opacity:0; transform:translate(-50%,-50%); animation:singleCardDeal 1.24s cubic-bezier(.16,.76,.17,1) both;
+  }
+  .deal-card.pos-top{ --card-y:-38vh; --card-rot:180deg; }
+  .deal-card.pos-bottom{ --card-y:38vh; }
+  .deal-card.pos-left{ --card-x:-42vw; --card-rot:90deg; }
+  .deal-card.pos-right{ --card-x:42vw; --card-rot:-90deg; }
+  @keyframes singleCardDeal{
+    0%{ opacity:0; transform:translate(-50%,-50%) scale(.86) rotate(var(--card-tilt)); filter:blur(1px) brightness(.82); }
+    10%{ opacity:1; }
+    74%{ opacity:1; filter:blur(0) brightness(1.12); }
+    91%{ opacity:1; transform:translate(calc(-50% + var(--card-x)),calc(-50% + var(--card-y))) scale(.82) rotate(calc(var(--card-rot) + var(--card-tilt))); }
+    100%{ opacity:0; transform:translate(calc(-50% + var(--card-x)),calc(-50% + var(--card-y))) scale(.7) rotate(calc(var(--card-rot) + var(--card-tilt))); }
+  }
   .play-gesture{
     position:absolute; z-index:2; width:clamp(62px,11vw,100px); height:clamp(24px,4vw,38px); border-radius:50%; pointer-events:none;
     background:radial-gradient(ellipse,rgba(10,1,0,.5),rgba(68,20,12,.22) 48%,transparent 74%); filter:blur(5px);
@@ -221,8 +335,8 @@
   .play-gesture.pos-left{ left:28%; top:50%; translate:-50% -50%; }
   .play-gesture.pos-right{ left:72%; top:50%; translate:-50% -50%; }
   @keyframes playerReach{ 0%{ opacity:0; scale:.35 .7; } 44%{ opacity:.72; scale:1.65 1; } 100%{ opacity:0; scale:.8 .7; } }
-  .trick-slot.pos-bottom{ top:62%; left:50%; --deal-y:31vh; --deal-rot:3deg; }
-  .trick-slot.pos-top{ top:38%; left:50%; --deal-y:-31vh; --deal-rot:-3deg; }
+  .trick-slot.pos-bottom{ top:53%; left:50%; --deal-y:31vh; --deal-rot:3deg; }
+  .trick-slot.pos-top{ top:47%; left:50%; --deal-y:-31vh; --deal-rot:-3deg; }
   .trick-slot.pos-right{ left:58.5%; top:50%; --deal-x:31vw; --deal-rot:-12deg; --target-rot:-4deg; }
   .trick-slot.pos-left{ left:41.5%; top:50%; --deal-x:-31vw; --deal-rot:12deg; --target-rot:4deg; }
   .trick-slot.collecting{ z-index:18; }
@@ -455,33 +569,32 @@
     color:#6c180f; box-shadow:0 8px 28px rgba(0,0,0,.4); font-size:30px; font-weight:900; cursor:pointer;
   }
   body.table-mode .chat-fab{
-    width:46px; height:46px; bottom:max(10px,env(safe-area-inset-bottom));
+    width:46px; height:46px; top:calc(max(6px,env(safe-area-inset-top)) + 47px); right:8px; bottom:auto; left:auto;
     display:flex; align-items:center; justify-content:center; padding:0; color:var(--game-label-color);
     background:linear-gradient(145deg,rgba(48,30,25,.76),rgba(16,10,9,.78));
     border:1px solid rgba(235,185,91,.52); box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 6px 18px rgba(0,0,0,.38);
     backdrop-filter:blur(12px) saturate(1.2); -webkit-backdrop-filter:blur(12px) saturate(1.2);
   }
-  body.table-mode .admin-fab{ background:linear-gradient(145deg,rgba(48,30,25,.76),rgba(16,10,9,.78)); }
+  body.table-mode .admin-fab{ top:auto; right:18px; bottom:max(10px,env(safe-area-inset-bottom)); left:auto; background:linear-gradient(145deg,rgba(48,30,25,.76),rgba(16,10,9,.78)); }
   body.table-mode .chat-badge{ background:var(--game-label-color); color:#1b0e09; border:1px solid rgba(255,235,192,.75); }
   .fab-icon{ width:23px; height:23px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  @media (max-width:520px){
+  @media (orientation:portrait) and (max-width:599px){
     :root{
       --game-label-size:clamp(15px,4.2vw,17px);
       --game-number-size:var(--game-label-size);
     }
     #app{ padding-left:4px; padding-right:4px; }
-    body.table-mode .table-board{ background-size:100% 100%; }
+    body.table-mode .table-board{ background-size:cover; background-position:center; }
     .scorebar{ width:100%; justify-content:center; order:3; }
     .score-chip{ flex:1; justify-content:center; padding:5px 7px; }
     .score-chip .score-name{ max-width:92px; }
     .table-wrap{ border-radius:15px; }
     .seat{ width:180px; height:84px; }
-    .seat.pos-top{ top:15%; }
-    .seat.pos-bottom{ bottom:15%; }
-    .seat.pos-left{ left:10%; }
-    .seat.pos-right{ right:10%; }
+    .seat.pos-top{ top:3%; }
+    .seat.pos-bottom{ bottom:3%; }
+    .seat.pos-left{ left:2%; }
+    .seat.pos-right{ right:2%; }
     .seat .chip{ font-size:var(--game-label-size); }
-    .trick-count{ font-size:var(--game-number-size); }
     .hand-row{ gap:3px; }
     .hand-row .card{ max-width:51px; font-size:12px; }
     .card .corner.tl{ top:4px; left:4px; }
@@ -491,22 +604,22 @@
     body.table-mode .score-chip .score-name{ max-width:74%; font-size:9px; }
     body.table-mode .topbar{ width:100vw; padding:0 5px; }
     .game-hud{ gap:4px; }
-    .hud-team{ width:auto; max-width:44vw; min-height:0; gap:3px; padding:2px 5px; border-radius:8px; overflow:visible; }
-    .hud-team .hud-name{ max-width:calc(100% - 20px); font-size:var(--game-label-size); line-height:1.15; }
-    .hud-team .hud-score{ font-size:var(--game-number-size); line-height:1.15; }
+    .hud-team{ width:40vw; max-width:40vw; min-height:34px; gap:3px; padding:5px 7px; border-radius:10px; overflow:visible; }
+    .hud-team .hud-name{ max-width:calc(100% - 18px); font-size:clamp(12px,3.2vw,14px); line-height:1.1; }
+    .hud-team .hud-score{ font-size:clamp(13px,3.55vw,15px); line-height:1.1; }
     .trump-emblem{ top:calc(100% + 5px); font-size:44px; }
     .identity-card{ width:min(94vw,430px); padding:30px 17px 25px; border-radius:34px; }
     .identity-list{ grid-template-columns:1fr; gap:10px; }
     .identity-name{ min-height:57px; }
     .bot-list{ grid-template-columns:1fr; }
     .seat-grid{ grid-template-columns:1fr; }
-    .player-hand-overlay{ left:1%; right:1%; bottom:max(.8%,env(safe-area-inset-bottom)); }
+    .player-hand-overlay{ left:2%; right:2%; bottom:max(.8%,env(safe-area-inset-bottom)); }
     .player-hand-overlay .table-hand{ padding:0; }
-    .player-hand-overlay .card{ width:clamp(42px,13.2vw,70px); margin-left:-6.9vw; font-size:13px; }
+    .player-hand-overlay .card{ width:clamp(40px,12.7vw,67px); margin-left:-7.15vw; font-size:13px; }
     .trump-picker .card{ width:clamp(58px,15.5vw,70px); height:auto; aspect-ratio:.714; font-size:15px; }
   }
   @media (orientation:portrait) and (min-width:600px){
-    body.table-mode .table-board{ background-image:url('assets/hokm-table-tablet.webp'); }
+    body.table-mode .table-board{ background-image:url('assets/hokm-table-tablet.webp?v=11'); }
     .seat.pos-top{ top:6%; }
     .seat.pos-bottom{ bottom:6%; }
     .seat.pos-left{ left:5%; }
@@ -641,13 +754,12 @@ function isPlayableLogic(card, hand, st){
 var GAME_KEY = 'hokm_state_v1';
 var PRESENCE_KEY = 'hokm_presence_v1';
 var CHAT_KEY = 'hokm_chat_v1';
-var IDENTITY_KEY = 'hokm_identity_v1';
 var NAMES_KEY = 'hokm_names_v1';
 
 // This build talks to our own tiny server instead of Claude's artifact storage,
 // so the whole game runs completely independently of Claude at runtime.
-// "Personal" (shared:false) data - just the identity choice - lives in this
-// browser's localStorage. "Shared" data goes through the server's /api/kv REST API.
+// Shared game data goes through the server's /api/kv REST API. The player's
+// identity is intentionally kept in memory only, so every new visit asks again.
 async function storageGet(key, shared){
   if(!shared){
     try{
@@ -698,10 +810,13 @@ var chatOpen = false;
 var lastSeenChatCount = 0;
 var pollFailed = false;
 var autoAdvanceScheduled = {};
+var dealAdvanceScheduled = {};
+var matchAdvanceScheduled = {};
 var adminAuthenticated = false;
 var adminLoginOpen = false;
 var adminLoginError = '';
 var audioContext = null;
+var audioMaster = null;
 var lastAppMarkup = '';
 var pollInFlight = false;
 var pollCounter = 0;
@@ -712,6 +827,8 @@ var humanPlayInFlight = false;
 var lastAnimatedActionSeq = 0;
 var lastAnimatedTrickSeq = 0;
 var lastAnimatedCutSeq = 0;
+var lastScheduledDealAudioSeq = '';
+var lastCrownTransferSeq = 0;
 
 function defaultState(){
   return {
@@ -735,6 +852,12 @@ function defaultState(){
     lastTrickCard:null,
     handResult:null,
     matchResult:null,
+    matchEndedAt:null,
+    dealStage:null,
+    dealSeq:0,
+    dealingStartedAt:null,
+    crownTransfer:null,
+    crownTransferSeq:0,
     trickSeq:0,
     actionSeq:0,
     cutEffect:null,
@@ -751,15 +874,33 @@ function normalizeState(st){
   if(!Array.isArray(st.botSeats) || st.botSeats.length!==4) st.botSeats=[false,false,false,false];
   if(typeof st.gameId!=='number') st.gameId=typeof st.updatedAt==='number'?st.updatedAt:Date.now();
   if(typeof st.actionSeq!=='number') st.actionSeq=0;
+  if(typeof st.dealSeq!=='number') st.dealSeq=0;
+  if(typeof st.crownTransferSeq!=='number') st.crownTransferSeq=0;
+  if(st.dealStage!=='initial' && st.dealStage!=='remainder') st.dealStage=null;
+  if(typeof st.dealingStartedAt!=='number') st.dealingStartedAt=null;
+  if(typeof st.matchEndedAt!=='number') st.matchEndedAt=null;
   if(st.nextHakemIndex!==null && (!Number.isInteger(st.nextHakemIndex) || st.nextHakemIndex<0 || st.nextHakemIndex>3)) st.nextHakemIndex=null;
   if(typeof st.nextHakemConfirmedAtMatchEnd!=='boolean') st.nextHakemConfirmedAtMatchEnd=false;
   if(!st.cutEffect || typeof st.cutEffect!=='object') st.cutEffect=null;
+  if(!st.crownTransfer || typeof st.crownTransfer!=='object') st.crownTransfer=null;
   return st;
 }
 
 function ensureAudio(){
   if(audioContext) return audioContext;
-  try{ audioContext = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+  try{
+    audioContext = new (window.AudioContext||window.webkitAudioContext)();
+    var compressor=audioContext.createDynamicsCompressor();
+    compressor.threshold.value=-20;
+    compressor.knee.value=10;
+    compressor.ratio.value=12;
+    compressor.attack.value=.003;
+    compressor.release.value=.22;
+    audioMaster=audioContext.createGain();
+    audioMaster.gain.value=2.4;
+    audioMaster.connect(compressor);
+    compressor.connect(audioContext.destination);
+  }catch(e){}
   return audioContext;
 }
 function playTone(freq, duration, volume, delay){
@@ -768,11 +909,25 @@ function playTone(freq, duration, volume, delay){
   var start=ctx.currentTime+(delay||0), osc=ctx.createOscillator(), gain=ctx.createGain();
   osc.type='sine'; osc.frequency.setValueAtTime(freq,start); osc.frequency.exponentialRampToValueAtTime(Math.max(70,freq*.62),start+duration);
   gain.gain.setValueAtTime(.0001,start); gain.gain.exponentialRampToValueAtTime(volume,start+.008); gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
-  osc.connect(gain); gain.connect(ctx.destination); osc.start(start); osc.stop(start+duration+.02);
+  osc.connect(gain); gain.connect(audioMaster||ctx.destination); osc.start(start); osc.stop(start+duration+.02);
 }
-function playCardSound(delay){ var d=typeof delay==='number'?delay:.39; playTone(520,.075,.055,d); playTone(185,.09,.035,d+.018); }
-function playTrickSound(){ playTone(480,.11,.045,0); playTone(720,.14,.04,.07); }
-function playVictorySound(){ [523,659,784,1047].forEach(function(f,i){ playTone(f,.28,.055,i*.12); }); }
+function playCardSound(delay){ var d=typeof delay==='number'?delay:.39; playTone(520,.085,.14,d); playTone(185,.11,.1,d+.018); }
+function playTrickSound(){ playTone(480,.13,.15,0); playTone(720,.17,.13,.07); }
+function playVictorySound(){ [523,659,784,1047].forEach(function(f,i){ playTone(f,.31,.17,i*.12); }); }
+function playCrownTransferSound(delay){
+  var d=typeof delay==='number'?delay:0;
+  [294,349,415,523,659,784].forEach(function(f,i){ playTone(f,.2,.13,d+i*.38); });
+  playTone(110,.42,.18,d+2.62);
+  playTone(988,.5,.2,d+2.72);
+  playTone(1318,.55,.17,d+2.8);
+}
+function playCrownVictorySound(delay){
+  var d=typeof delay==='number'?delay:0;
+  [523,659,784].forEach(function(f,i){ playTone(f,.26,.17,d+i*.1); });
+  [659,831,1047].forEach(function(f,i){ playTone(f,.32,.16,d+.52+i*.1); });
+  [784,988,1318].forEach(function(f,i){ playTone(f,.5,.18,d+1.08+i*.09); });
+  playTone(1568,.8,.16,d+1.72);
+}
 function playCutSound(delay){
   var ctx=ensureAudio(); if(!ctx) return;
   if(ctx.state==='suspended') ctx.resume();
@@ -787,9 +942,9 @@ function playCutSound(delay){
   roarFilter.frequency.exponentialRampToValueAtTime(150,start+.62);
   roarFilter.Q.value=4.2;
   roarGain.gain.setValueAtTime(.0001,start);
-  roarGain.gain.exponentialRampToValueAtTime(.105,start+.035);
+  roarGain.gain.exponentialRampToValueAtTime(.2,start+.035);
   roarGain.gain.exponentialRampToValueAtTime(.0001,start+.64);
-  roar.connect(roarFilter); roarFilter.connect(roarGain); roarGain.connect(ctx.destination);
+  roar.connect(roarFilter); roarFilter.connect(roarGain); roarGain.connect(audioMaster||ctx.destination);
   roar.start(start); roar.stop(start+.66);
 
   var duration=.48, buffer=ctx.createBuffer(1,Math.floor(ctx.sampleRate*duration),ctx.sampleRate), data=buffer.getChannelData(0);
@@ -797,11 +952,11 @@ function playCutSound(delay){
   var noise=ctx.createBufferSource(), noiseFilter=ctx.createBiquadFilter(), noiseGain=ctx.createGain();
   noise.buffer=buffer; noiseFilter.type='bandpass'; noiseFilter.frequency.value=190; noiseFilter.Q.value=.75;
   noiseGain.gain.setValueAtTime(.0001,start);
-  noiseGain.gain.exponentialRampToValueAtTime(.075,start+.018);
+  noiseGain.gain.exponentialRampToValueAtTime(.16,start+.018);
   noiseGain.gain.exponentialRampToValueAtTime(.0001,start+duration);
-  noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(ctx.destination);
+  noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(audioMaster||ctx.destination);
   noise.start(start); noise.stop(start+duration);
-  playTone(82,.5,.055,d+.02);
+  playTone(82,.5,.15,d+.02);
 }
 document.addEventListener('pointerdown',function unlock(){ ensureAudio(); document.removeEventListener('pointerdown',unlock); },{once:true});
 
@@ -855,31 +1010,22 @@ async function saveNames(){
 }
 
 async function init(){
+  try{ localStorage.removeItem('hokm_local_hokm_identity_v1'); }catch(e){}
   renderNow();
   await loadNames();
   renderNow();
-  var idRes = await storageGet(IDENTITY_KEY, false);
-  if(idRes && idRes.value !== undefined && idRes.value !== null && idRes.value !== ''){
-    var savedSeat = parseInt(idRes.value, 10);
-    if(savedSeat===0){
-      adminAuthenticated = await checkAdminSession();
-      if(!adminAuthenticated){ await storageDelete(IDENTITY_KEY,false); renderNow(); return; }
-    }
-    myIdentity = savedSeat;
-    await afterIdentityChosen();
-  } else {
-    renderNow();
-  }
 }
 
 async function chooseIdentity(seat){
+  if(seat===0 && !adminAuthenticated){
+    adminAuthenticated = await checkAdminSession();
+  }
   if(seat===0 && !adminAuthenticated){
     adminLoginOpen=true; adminLoginError=''; renderNow();
     setTimeout(function(){ var p=document.getElementById('adminPin'); if(p)p.focus(); },30);
     return;
   }
   myIdentity = seat;
-  await storageSet(IDENTITY_KEY, String(seat), false);
   await afterIdentityChosen();
 }
 
@@ -908,7 +1054,6 @@ async function submitAdminPin(){
 async function changeIdentity(){
   if(!confirm('\u0628\u0627\u0632\u06CC\u06A9\u0646 \u0631\u0627 \u062A\u063A\u06CC\u06CC\u0631 \u0645\u06CC\u200C\u062F\u0647\u06CC\u062F\u061F')) return;
   if(myIdentity===0){ try{ await fetch('/api/admin/logout',{method:'POST'}); }catch(e){} adminAuthenticated=false; }
-  await storageDelete(IDENTITY_KEY, false);
   myIdentity = null;
   state = null;
   renderNow();
@@ -928,7 +1073,12 @@ async function afterIdentityChosen(){
   await fetchPresence();
   pingPresence();
   renderNow();
+  if(state.phase==='dealing'){
+    scheduleDealAdvance(state.dealSeq,state.gameId);
+    scheduleDealAudio(state);
+  }
   if(state.phase==='trickResult') scheduleAutoAdvance(state.trickSeq);
+  if(state.phase==='matchEnd') scheduleNextMatch(state.crownTransferSeq,state.gameId);
   maybeTriggerBot();
   if(pollTimer) clearInterval(pollTimer);
   if(presenceTimer) clearInterval(presenceTimer);
@@ -944,6 +1094,7 @@ async function pollTick(){
     var beforeAction = state ? (state.actionSeq||0) : 0;
     var beforePhase = state ? state.phase : null;
     var beforeCutSeq = state && state.cutEffect && state.cutEffect.seq ? state.cutEffect.seq : 0;
+    var beforeCrownSeq = state ? (state.crownTransferSeq||0) : 0;
     var results = await Promise.all([
       storageGet(GAME_KEY,true),
       pollCounter%6===0 ? storageGet(NAMES_KEY,true) : Promise.resolve(null),
@@ -963,6 +1114,13 @@ async function pollTick(){
         pollFailed = false;
         if((parsed.actionSeq||0)>beforeAction) playCardSound();
         if(parsed.cutEffect && (parsed.cutEffect.seq||0)>beforeCutSeq) playCutSound();
+        if(parsed.crownTransfer && (parsed.crownTransferSeq||0)>beforeCrownSeq && (parsed.crownTransferSeq||0)>lastCrownTransferSeq){
+          lastCrownTransferSeq=parsed.crownTransferSeq||0;
+          if(Date.now()-(parsed.crownTransfer.at||0)<3900){
+            if(parsed.crownTransfer.mode==='stay') playCrownVictorySound(0);
+            else playCrownTransferSound(0);
+          }
+        }
         if(parsed.phase==='matchEnd' && beforePhase!=='matchEnd') playVictorySound();
       }catch(e){ pollFailed = true; }
     } else if(!state){
@@ -971,7 +1129,12 @@ async function pollTick(){
     if(results[1] && results[1].value){ try{ var arr=JSON.parse(results[1].value); if(Array.isArray(arr)&&arr.length===4){ for(var i=0;i<4;i++) if(arr[i]) PLAYERS[i].name=arr[i]; } }catch(e){} }
     if(results[2] && results[2].value){ try{ chatMessages=JSON.parse(results[2].value); }catch(e){} }
     if(results[3] && results[3].value){ try{ presence=JSON.parse(results[3].value); }catch(e){} }
+    if(state && state.phase==='dealing'){
+      scheduleDealAdvance(state.dealSeq,state.gameId);
+      scheduleDealAudio(state);
+    }
     if(state && state.phase==='trickResult') scheduleAutoAdvance(state.trickSeq);
+    if(state && state.phase==='matchEnd') scheduleNextMatch(state.crownTransferSeq,state.gameId);
     maybeTriggerBot();
     // Only touch the DOM when something a person would actually notice has changed,
     // otherwise the periodic poll makes the screen flicker for no reason.
@@ -1061,19 +1224,27 @@ async function persistState(ns){
 }
 
 // ---------- game actions ----------
+var DEAL_INITIAL_MS = 6300;
+var DEAL_REMAINDER_MS = 8100;
+var MATCH_AUTO_START_MS = 4300;
+
+function dealOrder(hakem){
+  return [hakem,(hakem+1)%4,(hakem+2)%4,(hakem+3)%4];
+}
+
 async function dealNewHand(bumpRound){
   var round = bumpRound ? (state.round+1) : 1;
   var deck = shuffle(createDeck());
   var hakem = Number.isInteger(state.nextHakemIndex) ? state.nextHakemIndex : state.hakemIndex;
   var hands = [[],[],[],[]];
-  hands[hakem] = deck.slice(0,5);
-  var rest = deck.slice(5);
+  var order = dealOrder(hakem);
+  for(var i=0;i<4;i++) hands[order[i]] = deck.splice(0,5);
   var ns = Object.assign({}, state, {
     hakemIndex: hakem,
     nextHakemIndex: null,
     nextHakemConfirmedAtMatchEnd: false,
     hands: hands,
-    remainingDeck: rest,
+    remainingDeck: deck,
     trump: null,
     currentTrick: [],
     tricksWon: [0,0],
@@ -1084,10 +1255,18 @@ async function dealNewHand(bumpRound){
     lastTrickCard: null,
     cutEffect: null,
     handResult: null,
+    matchResult: null,
+    matchEndedAt: null,
+    crownTransfer: null,
     round: round,
-    phase: 'trumpSelect'
+    phase: 'dealing',
+    dealStage: 'initial',
+    dealSeq: (state.dealSeq||0)+1,
+    dealingStartedAt: Date.now()
   });
   await persistState(ns);
+  scheduleDealAdvance(ns.dealSeq,ns.gameId);
+  scheduleDealAudio(ns);
 }
 function startFromLobby(){ if(myIdentity!==0 || !adminAuthenticated) return; dealNewHand(false); }
 function nextHandClick(){ if(myIdentity!==0 || !adminAuthenticated) return; dealNewHand(true); }
@@ -1095,18 +1274,24 @@ function nextHandClick(){ if(myIdentity!==0 || !adminAuthenticated) return; deal
 async function applyTrumpChoice(suitKey){
   var ns = Object.assign({}, state);
   ns.trump = suitKey;
-  var order = [ns.hakemIndex, (ns.hakemIndex+1)%4, (ns.hakemIndex+2)%4, (ns.hakemIndex+3)%4];
+  var order = dealOrder(ns.hakemIndex);
   var deck = ns.remainingDeck.slice();
   var hands = ns.hands.map(function(h){ return h.slice(); });
-  hands[ns.hakemIndex] = hands[ns.hakemIndex].concat(deck.splice(0,8));
-  for(var k=1;k<4;k++){ hands[order[k]] = deck.splice(0,13); }
+  for(var round=0;round<2;round++){
+    for(var k=0;k<4;k++) hands[order[k]] = hands[order[k]].concat(deck.splice(0,4));
+  }
   for(var i=0;i<4;i++) hands[i] = sortHand(hands[i], ns.trump);
   ns.hands = hands;
   ns.remainingDeck = [];
   ns.leader = ns.hakemIndex;
   ns.turnIndex = ns.hakemIndex;
-  ns.phase = 'playing';
+  ns.phase = 'dealing';
+  ns.dealStage = 'remainder';
+  ns.dealSeq = (state.dealSeq||0)+1;
+  ns.dealingStartedAt = Date.now();
   await persistState(ns);
+  scheduleDealAdvance(ns.dealSeq,ns.gameId);
+  scheduleDealAudio(ns);
 }
 
 async function chooseTrump(suitKey){
@@ -1164,11 +1349,26 @@ async function applyCardPlay(seat, cardIndex){
     ns.league = ns.league.slice();
     ns.league[team] += 1;
     ns.matchResult = { team:team, winnerSeat:winSeat };
+    ns.matchEndedAt = Date.now();
     ns.turnIndex = null;
     ns.phase = 'matchEnd';
-    ns.hakemIndex = (ns.hakemIndex+1)%4;
+    if(teamOfSeat(ns.hakemIndex)!==team){
+      var previousHakem=ns.hakemIndex;
+      ns.hakemIndex=(ns.hakemIndex+1)%4;
+      ns.crownTransferSeq=(state.crownTransferSeq||0)+1;
+      ns.crownTransfer={from:previousHakem,to:ns.hakemIndex,mode:'move',seq:ns.crownTransferSeq,at:Date.now()};
+    }else{
+      ns.crownTransferSeq=(state.crownTransferSeq||0)+1;
+      ns.crownTransfer={from:ns.hakemIndex,to:ns.hakemIndex,mode:'stay',seq:ns.crownTransferSeq,at:Date.now()};
+    }
     await persistState(ns);
+    if(ns.crownTransfer){
+      lastCrownTransferSeq=ns.crownTransferSeq||0;
+      if(ns.crownTransfer.mode==='stay') playCrownVictorySound(.08);
+      else playCrownTransferSound(.08);
+    }
     playVictorySound();
+    scheduleNextMatch(ns.crownTransferSeq,ns.gameId);
   } else {
     ns.phase = 'trickResult';
     await persistState(ns);
@@ -1230,6 +1430,42 @@ function botChooseCardIndex(hand, trickSoFar, trump){
   return legalIdx[0];
 }
 function wait(ms){ return new Promise(function(res){ setTimeout(res, ms); }); }
+
+function dealCardPlan(stage,hakem){
+  var order=dealOrder(hakem), plan=[];
+  if(stage==='initial'){
+    for(var seatIndex=0;seatIndex<4;seatIndex++){
+      for(var cardIndex=0;cardIndex<5;cardIndex++){
+        plan.push({seat:order[seatIndex],delay:plan.length*.25});
+      }
+    }
+  }else{
+    for(var round=0;round<2;round++){
+      for(var seatIndex2=0;seatIndex2<4;seatIndex2++){
+        for(var cardIndex2=0;cardIndex2<4;cardIndex2++){
+          var withinRound=seatIndex2*4+cardIndex2;
+          plan.push({seat:order[seatIndex2],delay:(round===0?0:3.7)+withinRound*.19});
+        }
+      }
+    }
+  }
+  return plan;
+}
+function playDealCardSound(){
+  playTone(455,.042,.085,0);
+}
+function scheduleDealAudio(st){
+  if(!st || st.phase!=='dealing') return;
+  var key=st.gameId+':'+st.dealSeq+':'+st.dealStage;
+  if(lastScheduledDealAudioSeq===key) return;
+  lastScheduledDealAudioSeq=key;
+  var elapsed=Math.max(0,Date.now()-(st.dealingStartedAt||Date.now()));
+  dealCardPlan(st.dealStage,st.hakemIndex).forEach(function(card){
+    var remaining=Math.round(card.delay*1000-elapsed);
+    if(remaining>=-60) setTimeout(playDealCardSound,Math.max(0,remaining));
+  });
+}
+
 var botActionInFlight = false;
 async function maybeTriggerBot(){
   if(!state || botActionInFlight || !state.botSeats) return;
@@ -1254,6 +1490,40 @@ async function maybeTriggerBot(){
     }
     botActionInFlight = false;
   }
+}
+
+function scheduleDealAdvance(seq,gameId){
+  if(!state || state.phase!=='dealing') return;
+  var stage=state.dealStage;
+  var timerKey=gameId+':'+seq+':'+stage;
+  if(dealAdvanceScheduled[timerKey]) return;
+  dealAdvanceScheduled[timerKey]=true;
+  var duration=stage==='initial'?DEAL_INITIAL_MS:DEAL_REMAINDER_MS;
+  var elapsed=Math.max(0,Date.now()-(state.dealingStartedAt||Date.now()));
+  setTimeout(function(){ autoAdvanceDeal(seq,gameId,stage); },Math.max(20,duration-elapsed));
+}
+async function autoAdvanceDeal(seq,gameId,stage){
+  if(!state || state.gameId!==gameId || state.phase!=='dealing' || state.dealSeq!==seq || state.dealStage!==stage) return;
+  var ns=Object.assign({},state);
+  ns.phase=stage==='initial'?'trumpSelect':'playing';
+  ns.dealStage=null;
+  ns.dealingStartedAt=null;
+  await persistState(ns);
+  maybeTriggerBot();
+}
+
+function scheduleNextMatch(crownSeq,gameId){
+  if(!state || state.phase!=='matchEnd') return;
+  var timerKey=gameId+':'+crownSeq;
+  if(matchAdvanceScheduled[timerKey]) return;
+  matchAdvanceScheduled[timerKey]=true;
+  var endedAt=state.matchEndedAt||state.updatedAt||Date.now();
+  var elapsed=Math.max(0,Date.now()-endedAt);
+  setTimeout(function(){ autoStartNextMatch(crownSeq,gameId); },Math.max(30,MATCH_AUTO_START_MS-elapsed));
+}
+async function autoStartNextMatch(crownSeq,gameId){
+  if(!state || state.gameId!==gameId || state.phase!=='matchEnd' || (state.crownTransferSeq||0)!==crownSeq) return;
+  await dealNewHand(true);
 }
 
 function scheduleAutoAdvance(seq){
@@ -1301,11 +1571,15 @@ async function restartGameConfirm(){
   fresh.nextHakemIndex = null;
   fresh.gameId = Date.now();
   autoAdvanceScheduled = {};
+  dealAdvanceScheduled = {};
+  matchAdvanceScheduled = {};
   botActionInFlight = false;
   humanPlayInFlight = false;
   lastAnimatedActionSeq = 0;
   lastAnimatedTrickSeq = 0;
   lastAnimatedCutSeq = 0;
+  lastScheduledDealAudioSeq = '';
+  lastCrownTransferSeq = 0;
   adminOpen = false;
   await persistState(fresh);
 }
@@ -1373,11 +1647,13 @@ function numberPipsHtml(card){
 
 function trickCountHtml(seat){
   var won=(state.seatTricks&&state.seatTricks[seat])||0;
-  return '<span class="trick-count" aria-label="'+won+' دست برده‌شده" title="دست برده‌شده: '+won+'">'+toFaDigits(won)+'</span>';
+  var cards='';
+  for(var i=0;i<won;i++) cards+='<i class="won-card"></i>';
+  return '<span class="won-cards" aria-label="'+won+' دست برده‌شده" title="دست برده‌شده: '+won+'">'+cards+'</span>';
 }
 
 function topbarHtml(){
-  var tableMode = state && ['trumpSelect','playing','trickResult','handEnd','matchEnd'].indexOf(state.phase)!==-1;
+  var tableMode = state && ['dealing','trumpSelect','playing','trickResult','handEnd','matchEnd'].indexOf(state.phase)!==-1;
   if(tableMode){
     var trumpSymbol=state.trump?suitIcon(state.trump):'';
     return '<div class="topbar"><div class="game-hud">'+
@@ -1447,6 +1723,9 @@ function latestSeatMessage(seat){
 function seatMapHtml(opts){
   opts = opts || {};
   var collecting = (state.phase==='trickResult' || state.phase==='matchEnd') && state.lastTrickWinnerSeat!==null;
+  var crownElapsed=state.crownTransfer&&state.crownTransfer.at?Math.max(0,Date.now()-state.crownTransfer.at):99999;
+  var crownStay=!!(state.crownTransfer&&state.crownTransfer.mode==='stay');
+  var crownTransferActive=!!(state.crownTransfer&&crownElapsed<(crownStay?3900:3700));
   var animateLatest = !!(opts.trick && opts.trick.length && (state.actionSeq||0)>lastAnimatedActionSeq);
   var animateCollection = collecting && (state.trickSeq||0)>lastAnimatedTrickSeq;
   var cutSeq = state.cutEffect && state.cutEffect.seq ? state.cutEffect.seq : 0;
@@ -1457,14 +1736,29 @@ function seatMapHtml(opts){
     var pos = seatPosition(i);
     var active = (opts.activeSeat===i);
     var isHakem = (state.hakemIndex===i);
+    var crownArriving = crownTransferActive && !crownStay && state.crownTransfer.to===i;
+    var crownCelebrating = crownTransferActive && crownStay && state.crownTransfer.to===i;
     var scoreHit = animateCollection && state.lastTrickWinnerSeat===i;
     var seatMessage = latestSeatMessage(i);
     var bubbleText = seatMessage ? String(seatMessage.text||'') : '';
     if(bubbleText.length>90) bubbleText=bubbleText.slice(0,90)+'\u2026';
-    html += '<div class="seat pos-'+pos+(active?' active':'')+(scoreHit?' score-hit':'')+'">'+
+    var crownSeatStyle=crownArriving?' style="--crown-arrive-delay:'+Math.max(-.78,2.85-crownElapsed/1000).toFixed(3)+'s"':'';
+    html += '<div class="seat pos-'+pos+(active?' active':'')+(scoreHit?' score-hit':'')+(crownArriving?' crown-arriving':'')+(crownCelebrating?' crown-celebrating':'')+'"'+crownSeatStyle+'>'+
       '<div class="chip">'+(isHakem?'<span class="table-crown">'+crownIcon()+'</span>':'')+'<span class="seat-name">'+displayName(i)+'</span>'+trickCountHtml(i)+'</div>'+
       (seatMessage?'<div class="seat-chat">'+escapeHtml(bubbleText)+'</div>':'')+
     '</div>';
+  }
+  if(crownTransferActive){
+    var crownFromPos=seatPosition(state.crownTransfer.from);
+    if(crownStay){
+      var sparks='';
+      for(var spark=0;spark<12;spark++) sparks+='<i class="spark" style="--spark-angle:'+(spark*30)+'deg;--spark-delay:'+((spark%4)*.07)+'s"></i>';
+      html += '<div class="crown-victory pos-'+crownFromPos+'" style="animation-delay:-'+(crownElapsed/1000).toFixed(3)+'s" aria-hidden="true">'+crownIcon()+sparks+'</div>';
+    }else{
+      var crownToPos=seatPosition(state.crownTransfer.to), flightSparks='';
+      for(var flightSpark=0;flightSpark<16;flightSpark++) flightSparks+='<i class="spark" style="--spark-angle:'+(flightSpark*22.5)+'deg;--spark-delay:'+((flightSpark%4)*.06)+'s"></i>';
+      html += '<div class="crown-flight pos-'+crownToPos+'" style="animation-delay:-'+(crownElapsed/1000).toFixed(3)+'s" aria-hidden="true">'+crownIcon()+flightSparks+'</div>';
+    }
   }
   if(animateCut){
     var cutPos = seatPosition(state.cutEffect.seat);
@@ -1538,12 +1832,28 @@ function renderTrumpPhase(){
   return '<div class="screen game-screen">'+seatMapHtml({activeSeat:state.hakemIndex,trick:[]})+'</div>';
 }
 
+function dealAnimationHtml(){
+  if(!state || state.phase!=='dealing') return '';
+  var elapsed=Math.max(0,Date.now()-(state.dealingStartedAt||Date.now()))/1000;
+  var deck='<div class="deal-deck" aria-hidden="true"><i></i><i></i><i></i></div>';
+  var cards=dealCardPlan(state.dealStage,state.hakemIndex).map(function(card,index){
+    var delay=card.delay-elapsed;
+    var tilt=((index%5)-2)*1.4;
+    return '<div class="deal-card pos-'+seatPosition(card.seat)+'" style="animation-delay:'+delay.toFixed(3)+'s;--card-tilt:'+tilt+'deg" aria-hidden="true"><i></i></div>';
+  }).join('');
+  return deck+cards;
+}
+
+function renderDealingPhase(){
+  return '<div class="screen game-screen">'+seatMapHtml({activeSeat:null,trick:[],overlayHtml:dealAnimationHtml()})+'</div>';
+}
+
 function renderTableHand(hand, isMyTurn, st){
   var middle=(hand.length-1)/2;
   var cards=hand.map(function(c,i){
     var playable=isMyTurn && isPlayableLogic(c,hand,st);
     var face=el(cardFace(c,{trump:c.suit===st.trump,extraClass:playable?'playable':'disabled'}));
-    face.style.setProperty('--fan',((i-middle)*2.15)+'deg');
+    face.style.setProperty('--fan',((i-middle)*1.8)+'deg');
     face.style.setProperty('--lift',(Math.abs(i-middle)*1.15)+'px');
     if(playable) face.setAttribute('onclick','playCard('+i+')');
     return face.outerHTML;
@@ -1592,8 +1902,7 @@ function renderHandEndPhase(){
 
 function renderMatchEndPhase(){
   var mr = state.matchResult;
-  var restart = (myIdentity===0 && adminAuthenticated) ? '<button class="next-hand-fab" onclick="backToLobby()" aria-label="بازی تازه">↻</button>' : '';
-  return '<div class="screen game-screen">'+seatMapHtml({activeSeat:mr.winnerSeat,trick:state.currentTrick,centerTrump:false,overlayHtml:restart})+'</div>';
+  return '<div class="screen game-screen">'+seatMapHtml({activeSeat:mr.winnerSeat,trick:state.currentTrick,centerTrump:false})+'</div>';
 }
 
 function chatFabIcon(){
@@ -1682,10 +1991,11 @@ function render(){
   var app = document.getElementById('app');
   if(myIdentity===null){ document.body.classList.remove('table-mode'); var picker=renderIdentityPicker(); if(picker!==lastAppMarkup){ app.innerHTML=picker; lastAppMarkup=picker; } return; }
   if(!state){ document.body.classList.remove('table-mode'); var loading=renderLoading(); if(loading!==lastAppMarkup){ app.innerHTML=loading; lastAppMarkup=loading; } return; }
-  document.body.classList.toggle('table-mode',['trumpSelect','playing','trickResult','handEnd','matchEnd'].indexOf(state.phase)!==-1);
+  document.body.classList.toggle('table-mode',['dealing','trumpSelect','playing','trickResult','handEnd','matchEnd'].indexOf(state.phase)!==-1);
   var body;
   switch(state.phase){
     case 'lobby': body = renderLobby(); break;
+    case 'dealing': body = renderDealingPhase(); break;
     case 'trumpSelect': body = renderTrumpPhase(); break;
     case 'playing': body = renderPlayingPhase(); break;
     case 'trickResult': body = renderTrickResultPhase(); break;
@@ -1693,7 +2003,7 @@ function render(){
     case 'matchEnd': body = renderMatchEndPhase(); break;
     default: body = renderLobby();
   }
-  var markup = topbarHtml() + body + chatFabHtml() + chatPanelHtml() + adminFabHtml() + adminPanelHtml() + nextHakemPromptHtml();
+  var markup = topbarHtml() + body + chatFabHtml() + chatPanelHtml() + adminFabHtml() + adminPanelHtml();
   if(markup!==lastAppMarkup){ app.innerHTML=markup; lastAppMarkup=markup; }
   if(chatOpen) scrollChatToBottom();
 }
